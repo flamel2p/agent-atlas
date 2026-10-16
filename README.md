@@ -6,7 +6,7 @@ Independently runnable learning demos with explicit architecture, tool boundarie
 
 | Case | Pattern | Status | Runtime | Evidence |
 | --- | --- | --- | --- | --- |
-| [Tool-Using Agent](agents/tool-using/README.md) | Tool selection and guarded execution | planned | Python 3.14 (uv CLI) | Contract selected; not implemented or run |
+| [Tool-Using Agent](agents/tool-using/README.md) | Tool selection and guarded execution | demo-ready | Python 3.14 (uv CLI) | Replay, mocked-provider checks, and two live gpt-6-luna examples passed |
 
 ## Use a demo
 
@@ -31,7 +31,7 @@ The inventory preserves the Security-Hardened/Compliance-Driven naming differenc
 
 ## Status and next step
 
-Initialized on 16 October 2026 with governance and one planned Tool-Using case. Its [implementation contract](agents/tool-using/SPEC.md) is selected: Python 3.14/uv CLI, synthetic campaign totals with optional bar output, default replay and opt-in OpenAI Responses (`gpt-6-luna`), and three bounded local tools. Next: implement that case and its fixture/mock checks. No runnable Agent implementation exists yet. See [setup validation](docs/CODEX_WORKFLOW.md#validation-status) for checked and unverified behavior.
+Initialized on 16 October 2026 with governance and a runnable Tool-Using case: Python 3.14/uv CLI, synthetic campaign totals with optional bar output, default replay and opt-in OpenAI Responses (`gpt-6-luna`), and three bounded local tools. Replay, failure boundaries, mocked-provider behavior, and both selected live acceptance examples are verified. The selected case is complete; further cases or capabilities need their own scope. See [case verification](agents/tool-using/README.md#verification) and [setup validation](docs/CODEX_WORKFLOW.md#validation-status) for evidence and remaining limits.
 
 ## License
 

@@ -1,14 +1,14 @@
 # Tool-Using Agent specification
 
 Slug: tool-using
-Status: planned
+Status: demo-ready
 Runtime: Python 3.14 (uv CLI)
 
 ## Problem and scope
 
 Build a developer-facing CLI that turns a request about synthetic campaign spend or revenue into validated local tool calls, a totals table, and optionally one bar chart. The learning objective is the boundary between model-proposed actions and executable authority.
 
-Contract selected on 16 October 2026 at the user's request. This document selects behavior for implementation; no runtime, dependencies, fixtures, or model calls have been implemented or validated yet.
+Contract selected, implemented, and validated on 16 October 2026 at the user's request. Fixture/replay, mocked-provider checks, and both selected live-model examples passed. The [README](README.md#verification) records actual commands and evidence boundaries; two examples do not establish general language understanding or production reliability.
 
 Included: one bundled dataset, sum by channel, inspectable calls, deterministic replay, and opt-in live tool selection. Excluded: arbitrary file uploads, other aggregations/groupings, filtering, business recommendations, web UI, database, persistent memory, multiple providers, and external business actions.
 
@@ -26,7 +26,7 @@ Included: one bundled dataset, sum by channel, inspectable calls, deterministic 
 | Default mode | Explicit scripted `replay`; `live` requires deliberate selection and `OPENAI_API_KEY`. | A keyword parser would blur simulation with model selection. |
 | Authority | Three fixed local tools; one synthetic dataset; host-generated output locations. | Arbitrary files, shell tools, and internet tools are outside this learning objective. |
 
-Python 3.14 is a maintained branch in the [Python status table](https://devguide.python.org/versions/). A case-local `.python-version`, `pyproject.toml`, and committed `uv.lock` will make the selected environment reproducible; see [uv project conventions](https://docs.astral.sh/uv/guides/projects/) and [locked synchronization](https://docs.astral.sh/uv/concepts/projects/sync/). Exact Python patch and package versions will be resolved, locked, and compatibility-tested during implementation, without changing this selected scope.
+Python 3.14 is a maintained branch in the [Python status table](https://devguide.python.org/versions/). The case pins Python 3.14.8 in [.python-version](.python-version), direct dependency versions in [pyproject.toml](pyproject.toml), and the resolved environment in [uv.lock](uv.lock); see [uv project conventions](https://docs.astral.sh/uv/guides/projects/) and [locked synchronization](https://docs.astral.sh/uv/concepts/projects/sync/). Compatibility evidence is local and recorded in the README; a lockfile does not prove live API access.
 
 ## Inputs and outputs
 
@@ -38,7 +38,7 @@ Python 3.14 is a maintained branch in the [Python status table](https://devguide
 - Dataset is fixed to `campaign-demo-v1`; no user/model paths, URLs, output-directory argument, or model override in v1.
 - Supported task meaning: total spend or total revenue by channel over the entire fixture. No free-form calculations or silent conversion of an unsupported operation to sum. Instruct the live model to decline unsupported tasks; runtime schemas cannot independently prove that it understood the request.
 
-Planned entry point: `tool-using` from inside this case. Example commands are design targets, not currently runnable:
+Entry point: `tool-using` from inside this case after `uv sync --locked`. Live mode requires an exported key or explicit `uv --env-file .env` loading; see the [run instructions](README.md#setup-and-run).
 
 ```sh
 uv run --locked tool-using --mode replay --example revenue-by-channel-bar
@@ -106,7 +106,7 @@ No model-selected shell, Python execution, HTTP requests, database access, insta
 
 Maintain conversation history in memory, preserve required response output items, and correlate each `function_call_output` with the original `call_id`. Never dispatch plain text as a call. Reject multiple calls in one response before executing any; disable hosted tools and automatic provider/model fallback. Expose the chart tool only in bar mode and enforce that rule again in the dispatcher.
 
-Only the task, fixed instructions/schemas, and bounded synthetic metadata/results go to the provider. Read `OPENAI_API_KEY` from the process environment in live mode only; a later `.env.example` contains variable names and harmless placeholders. Do not log keys, headers, environment contents, raw provider exceptions, full prompt/response bodies, or model reasoning. Traces contain validated call arguments, result/error codes, provenance, timings, and usage; malformed proposal payloads are omitted.
+Only the task, fixed instructions/schemas, and bounded synthetic metadata/results go to the provider. Read `OPENAI_API_KEY` from the process environment in live mode only; `.env.example` contains variable names and harmless placeholders. Do not log keys, headers, environment contents, raw provider exceptions, full prompt/response bodies, or model reasoning. Traces contain validated call arguments, result/error codes, provenance, timings, and usage; malformed proposal payloads are omitted.
 
 Paid API access, account availability, rate limits, model drift, and API changes remain external dependencies. `store: false` does not mean zero retention; provider abuse-monitoring controls still apply. Do not send real client data. See [OpenAI data controls](https://developers.openai.com/api/docs/guides/your-data). Keep the narrow backend interface local; self-hosted inference is a later case-scoped decision.
 
@@ -127,7 +127,7 @@ Use stable error codes for `invalid_input`, `missing_credentials`, `invalid_data
 
 ## Acceptance criteria
 
-All criteria below are selected and **unexecuted**:
+The following criteria define acceptance. Fixture, mocked-provider, and the two successful live-model results are recorded in the [README](README.md#verification).
 
 | Mode | Criterion |
 | --- | --- |
@@ -147,6 +147,6 @@ Fixture and mocked-provider success may qualify the documented replay demo as `d
 
 Runtime, scenario, backend, output modes, tool authority, limits, and acceptance contracts are selected. No further product-scope decision blocks implementation.
 
-Implementation work remains: create case-local packaging/lockfile and fixtures, implement the contract, select compatible exact package/patch versions, and record verified setup/run/test commands. Recheck provider/model availability before a live run. Keep status `planned` until implementation starts; do not create successful verification records from this specification.
+The case-local implementation, fixture, lockfile, and executable checks are present. `demo-ready` covers the documented replay path and the two selected live examples. Live operation continues to require account credentials and model access; the verification record is evidence for those requests on that date.
 
-The existing repository [MIT license](../../LICENSE), copyright (c) 2026 Ekko, is preserved. Source bundles remain historical references. Next step: implement this case and its fixture/mock checks, then separately report any live-model validation.
+The existing repository [MIT license](../../LICENSE), copyright (c) 2026 Ekko, is preserved. Source bundles remain historical references. The selected implementation and validation are complete; further capabilities or providers require separately scoped contract changes. Hosted CI and deployment remain unverified.
