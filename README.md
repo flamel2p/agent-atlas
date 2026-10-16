@@ -6,7 +6,7 @@ Independently runnable learning demos with explicit architecture, tool boundarie
 
 | Case | Pattern | Status | Runtime | Evidence |
 | --- | --- | --- | --- | --- |
-| [Tool-Using Agent](agents/tool-using/README.md) | Tool selection and guarded execution | planned | Undecided | Not implemented or run |
+| [Tool-Using Agent](agents/tool-using/README.md) | Tool selection and guarded execution | planned | Python 3.14 (uv CLI) | Contract selected; not implemented or run |
 
 ## Use a demo
 
@@ -31,7 +31,7 @@ The inventory preserves the Security-Hardened/Compliance-Driven naming differenc
 
 ## Status and next step
 
-Initialized on 16 October 2026 with governance and one planned Tool-Using case. No runnable Agent implementation exists yet. Select its language/runtime, smallest scenario, model backend or deterministic mode, permitted tool effects, and execution/failure limits in [the case specification](agents/tool-using/SPEC.md) before implementation. See [setup validation](docs/CODEX_WORKFLOW.md#validation-status) for checked and unverified behavior.
+Initialized on 16 October 2026 with governance and one planned Tool-Using case. Its [implementation contract](agents/tool-using/SPEC.md) is selected: Python 3.14/uv CLI, synthetic campaign totals with optional bar output, default replay and opt-in OpenAI Responses (`gpt-6-luna`), and three bounded local tools. Next: implement that case and its fixture/mock checks. No runnable Agent implementation exists yet. See [setup validation](docs/CODEX_WORKFLOW.md#validation-status) for checked and unverified behavior.
 
 ## License
 

@@ -61,4 +61,4 @@ The three custom role definitions passed syntax/field validation and match the c
 
 The [GitHub workflow](../.github/workflows/structure.yml) is configured but has not run on GitHub. Its checkout action is pinned to the verified [v7.0.1 release commit](https://github.com/actions/checkout/commit/3d3c42e5aac5ba805825da76410c181273ba90b1). Local checks establish no hosted CI, Agent runtime, live-model, deployment, or publication result. Tool-Using remains `planned`.
 
-Next step: select the [Tool-Using implementation contract](../agents/tool-using/SPEC.md#dependencies-and-open-decisions).
+The [Tool-Using implementation contract](../agents/tool-using/SPEC.md#dependencies-and-open-decisions) was selected on 16 October 2026. Next step: implement the case and its fixture/mock checks; the setup results above do not validate its selected runtime or backend.
