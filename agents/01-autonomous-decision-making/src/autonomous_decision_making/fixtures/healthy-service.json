@@ -1,0 +1,20 @@
+{
+  "ticket": {
+    "ticket_id": "TKT-HEALTHY-001",
+    "message": "The dashboard does not load for me.",
+    "service": "dashboard",
+    "request_kind": "troubleshooting",
+    "impact": "low",
+    "customer_tier": "standard",
+    "urgency": "normal",
+    "human_requested": false,
+    "human_available": true,
+    "scenario_time": "2026-10-18T09:00:00+00:00"
+  },
+  "observation": {
+    "service": "dashboard",
+    "status": "operational",
+    "observed_at": "2026-10-18T08:59:00+00:00",
+    "evidence_id": "SYN-DASHBOARD-HEALTHY-001"
+  }
+}

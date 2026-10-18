@@ -1,0 +1,20 @@
+{
+  "ticket": {
+    "ticket_id": "TKT-REFUND-001",
+    "message": "Please refund my synthetic subscription.",
+    "service": "api",
+    "request_kind": "refund",
+    "impact": "low",
+    "customer_tier": "standard",
+    "urgency": "normal",
+    "human_requested": false,
+    "human_available": true,
+    "scenario_time": "2026-10-18T09:00:00+00:00"
+  },
+  "observation": {
+    "service": "api",
+    "status": "outage",
+    "observed_at": "2026-10-18T08:59:00+00:00",
+    "evidence_id": "SYN-API-OUTAGE-001"
+  }
+}

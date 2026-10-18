@@ -6,6 +6,7 @@ Independently runnable learning demos with explicit architecture, tool boundarie
 
 | Case | Pattern | Status | Runtime | Evidence |
 | --- | --- | --- | --- | --- |
+| [Autonomous Decision-Making Agent](agents/01-autonomous-decision-making/README.md) | Contextual autonomy routing with host policy | demo-ready | Python 3.14 (uv CLI) | 11 replay examples, 123 fixture/mocked-provider checks, isolated install, and independent review passed; live model unverified |
 | [Tool-Using Agent](agents/tool-using/README.md) | Tool selection and guarded execution | demo-ready | Python 3.14 (uv CLI) | Replay, mocked-provider checks, and two live gpt-6-luna examples passed |
 
 ## Use a demo
@@ -31,7 +32,9 @@ The inventory preserves the Security-Hardened/Compliance-Driven naming differenc
 
 ## Status and next step
 
-Initialized on 16 October 2026 with governance and a runnable Tool-Using case: Python 3.14/uv CLI, synthetic campaign totals with optional bar output, default replay and opt-in OpenAI Responses (`gpt-6-luna`), and three bounded local tools. Replay, failure boundaries, mocked-provider behavior, and both selected live acceptance examples are verified. The selected case is complete; further cases or capabilities need their own scope. See [case verification](agents/tool-using/README.md#verification) and [setup validation](docs/CODEX_WORKFLOW.md#validation-status) for evidence and remaining limits.
+Initialized on 16 October 2026 with governance and a runnable Tool-Using case. Its replay, mocked-provider checks, and two selected live requests passed; see [Tool-Using verification](agents/tool-using/README.md#verification).
+
+Added Autonomous Decision-Making on 18 October 2026: synthetic support triage with deterministic policy, one read-only status observation, and autonomous/guided/handoff outcomes. Its 11 replay examples, 123 fixture/mocked-provider checks, independent review, and case-only installation passed. Optional OpenAI mode is implemented; live compatibility remains unverified. See [Autonomous Decision-Making verification](agents/01-autonomous-decision-making/README.md#verification) and [setup validation](docs/CODEX_WORKFLOW.md#validation-status). Both cases are complete for their selected acceptance criteria; further capabilities need their own scope.
 
 ## License
 
