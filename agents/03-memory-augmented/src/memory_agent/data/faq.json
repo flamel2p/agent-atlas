@@ -1,0 +1,65 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "id": "faq-working-memory",
+      "title": "Synthetic course: Working memory",
+      "keywords": ["working", "context", "temporary", "turn", "prompt"],
+      "answers": {
+        "concise": "Working memory holds the bounded context needed for the current turn; it is discarded after the turn.",
+        "step-by-step": "1. Read the current request. 2. Add the active preference and bounded retrieved context. 3. Use this working memory for one turn, then discard it.",
+        "example-first": "For example, one question, a remembered style, three prior episodes, and three FAQ candidates form this demo's working memory. That context lasts only for the current turn."
+      }
+    },
+    {
+      "id": "faq-episodic-memory",
+      "title": "Synthetic course: Episodic memory",
+      "keywords": ["episodic", "episodes", "episode", "history", "interaction", "session", "sessions", "provenance"],
+      "answers": {
+        "concise": "Episodic memory records prior interactions with timestamps and provenance. It supplies historical context, not authoritative factual evidence.",
+        "step-by-step": "1. Record an interaction with its user scope, session, and timestamp. 2. Retrieve relevant eligible episodes for that user. 3. Treat those episodes as historical context rather than factual authority.",
+        "example-first": "For example, an earlier question about working memory can be recalled with its source session and timestamp. That episode describes an interaction; it does not establish a new course fact."
+      }
+    },
+    {
+      "id": "faq-semantic-memory",
+      "title": "Synthetic course: Semantic memory",
+      "keywords": ["semantic", "knowledge", "facts", "faq", "evidence", "citations"],
+      "answers": {
+        "concise": "Semantic memory supplies curated domain knowledge. This demo uses a packaged read-only FAQ and cites its entry IDs and titles.",
+        "step-by-step": "1. Maintain a curated knowledge source. 2. Retrieve relevant entries. 3. Cite the selected entries when rendering an answer. This demo's source is a read-only FAQ.",
+        "example-first": "For example, the course FAQ defines working memory independently of any learner's conversation. The demo retrieves that curated entry and cites it as semantic evidence."
+      }
+    },
+    {
+      "id": "faq-preferences",
+      "title": "Synthetic course: Explicit preferences",
+      "keywords": ["preference", "preferences", "style", "remember", "correction", "correct", "update"],
+      "answers": {
+        "concise": "Only an explicit remember-style input changes the stored explanation preference. The latest explicit update wins; query text and model output cannot change it.",
+        "step-by-step": "1. Supply remember-style explicitly. 2. Apply that style to the current turn. 3. Commit it with its provenance when the turn succeeds. A later explicit update replaces the preference.",
+        "example-first": "For example, explicitly selecting example-first overrides a remembered concise preference. Merely writing 'remember example-first' in a question leaves the stored preference unchanged."
+      }
+    },
+    {
+      "id": "faq-retention",
+      "title": "Synthetic course: Retention and forgetting",
+      "keywords": ["retention", "expiry", "expire", "expired", "forget", "delete", "deletion", "days"],
+      "answers": {
+        "concise": "This demo recalls records younger than 30 days and keeps at most 20 interactions per user after successful turns. Forget logically deletes one user's rows; it is not secure physical erasure.",
+        "step-by-step": "1. Exclude records at least 30 days old from recall. 2. Prune expired rows and trim to 20 interactions on a successful turn. 3. Use forget to logically delete a user's rows; backups and old SQLite pages may remain.",
+        "example-first": "For example, an episode exactly 30 days old is ineligible for recall. It may remain on disk until a successful turn or forget; logical deletion does not guarantee forensic erasure."
+      }
+    },
+    {
+      "id": "faq-retrieval",
+      "title": "Synthetic course: Lexical retrieval",
+      "keywords": ["retrieval", "retrieve", "lexical", "tokens", "ranking", "similarity", "vector", "embeddings"],
+      "answers": {
+        "concise": "Lexical retrieval ranks entries by shared tokens. It is deterministic and transparent for a small FAQ, but can miss synonyms and does not provide embedding similarity.",
+        "step-by-step": "1. Tokenize the query and candidate text. 2. Count shared tokens. 3. Sort by overlap with deterministic tie-breaking and return bounded candidates. Queries without overlap have no evidence.",
+        "example-first": "For example, a query containing 'episodic' overlaps the episodic-memory entry. A synonym absent from its title and keywords may find nothing because this demo uses token overlap, not embeddings."
+      }
+    }
+  ]
+}
