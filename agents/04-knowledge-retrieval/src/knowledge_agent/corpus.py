@@ -1,3 +1,9 @@
+"""Load a bounded source snapshot and filter it before any retrieval or exposure.
+
+Documents own exact text; passages identify paragraph slices within that text.
+All resources are packaged with this case, with no user-supplied file paths.
+"""
+
 from dataclasses import dataclass
 from datetime import date
 from hashlib import sha256
@@ -19,6 +25,8 @@ SEPARATOR = re.compile(r"\n[ \t]*\n")
 
 @dataclass(frozen=True, slots=True)
 class Document:
+    """Validated source text plus metadata used for eligibility and citation."""
+
     id: str
     title: str
     revision: str
@@ -33,6 +41,12 @@ class Document:
 
 @dataclass(frozen=True, slots=True)
 class Passage:
+    """One complete paragraph, addressed by half-open Python character offsets.
+
+    ``start:end`` indexes Unicode characters, not UTF-8 bytes or model tokens.
+    Text is derived from the document so quotations cannot drift independently.
+    """
+
     document: Document
     index: int
     start: int
@@ -49,11 +63,17 @@ class Passage:
 
 @dataclass(frozen=True, slots=True)
 class Snapshot:
+    """Immutable validated documents and a SHA-256 digest of their original bytes."""
+
     digest: str
     documents: tuple[Document, ...]
 
 
 def passages(document: Document) -> tuple[Passage, ...]:
+    """Locate paragraphs without rewriting whitespace or losing source offsets.
+
+    Corpus validation rejects blank/oversize spans; this helper only splits them.
+    """
     spans = []
     start = 0
     for separator in SEPARATOR.finditer(document.text):
@@ -64,11 +84,17 @@ def passages(document: Document) -> tuple[Passage, ...]:
 
 
 def load_bundled() -> bytes:
+    """Read one byte beyond the size cap so validation can detect an oversize file."""
     with files("knowledge_agent").joinpath("resources/corpus.json").open("rb") as stream:
         return stream.read(MAX_CORPUS_BYTES + 1)
 
 
 def validate_corpus(raw: bytes) -> Snapshot:
+    """Reject the entire snapshot on malformed metadata, text, or paragraph bounds.
+
+    No partially validated documents reach ranking. The digest identifies the
+    exact input bytes, so even a formatting-only corpus edit changes provenance.
+    """
     try:
         if not isinstance(raw, bytes) or not 0 < len(raw) <= MAX_CORPUS_BYTES:
             raise ValueError
@@ -115,6 +141,7 @@ def validate_corpus(raw: bytes) -> Snapshot:
             parts = passages(document)
             if not 1 <= len(parts) <= 16 or any(not part.text.strip() or len(part.text) > 600 for part in parts):
                 raise ValueError
+            # Bound the original span, including separators, of every two-paragraph chunk.
             if any(right.end - left.start > 1202 for left, right in zip(parts, parts[1:])):
                 raise ValueError
             documents.append(document)
@@ -124,6 +151,12 @@ def validate_corpus(raw: bytes) -> Snapshot:
 
 
 def eligible(snapshot: Snapshot, request: Request) -> tuple[Document, ...]:
+    """Apply host scope before ranking, including its term-frequency statistics.
+
+    Effective intervals are [start, end); review age includes days 0 through 90.
+    Staff scope includes public sources. These dates enforce declared metadata,
+    not independently verified real-world freshness.
+    """
     return tuple(document for document in snapshot.documents if (
         document.product == "atlasdesk" and document.version == request.version
         and (document.audience == "public" or request.audience == "staff")

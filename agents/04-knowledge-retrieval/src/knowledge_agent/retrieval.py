@@ -1,3 +1,9 @@
+"""Rank lexical evidence, select paragraph IDs, and render exact source quotes.
+
+Chunks are ranking units; passages are citation units. Neither a BM25 score nor
+valid source offsets prove that the evidence semantically answers a question.
+"""
+
 from collections import Counter
 from dataclasses import dataclass
 from itertools import combinations
@@ -9,6 +15,8 @@ from .corpus import Document, Passage, Snapshot, passages
 
 @dataclass(frozen=True, slots=True)
 class Chunk:
+    """One or two adjacent passages with a relative BM25 score, not confidence."""
+
     paragraphs: tuple[Passage, ...]
     score: float = 0.0
 
@@ -21,6 +29,10 @@ class Chunk:
         return self.paragraphs[0].document.text[self.paragraphs[0].start:self.paragraphs[-1].end]
 
     def public(self):
+        """Serialize an already eligible chunk; this method does not enforce access.
+
+        'Public' means caller-visible JSON here, including staff-scoped results.
+        """
         first, last = self.paragraphs[0], self.paragraphs[-1]
         return {"chunk_id": self.id, "document_id": first.document.id, "title": first.document.title,
                 "revision": first.document.revision, "version": first.document.version,
@@ -30,6 +42,7 @@ class Chunk:
 
 
 def make_chunks(documents: tuple[Document, ...]) -> tuple[Chunk, ...]:
+    """Pair adjacent paragraphs with one-paragraph overlap, retaining source spans."""
     chunks = []
     for document in documents:
         parts = passages(document)
@@ -41,6 +54,11 @@ def make_chunks(documents: tuple[Document, ...]) -> tuple[Chunk, ...]:
 
 
 def retrieve(documents: tuple[Document, ...], question: str) -> tuple[Chunk, ...]:
+    """Rank already eligible chunks once and return at most three positive matches.
+
+    BM25 weights rare query terms and saturates repeated occurrences, with a
+    length adjustment. Its constants are k1=1.2 and b=0.75; ties use chunk IDs.
+    """
     chunks = make_chunks(documents)
     if not chunks:
         return ()
@@ -49,6 +67,7 @@ def retrieve(documents: tuple[Document, ...], question: str) -> tuple[Chunk, ...
     average = sum(lengths) / len(chunks)
     if average == 0:
         return ()
+    # A repeated question term contributes once; corpus frequency counts chunks.
     query = set(tokens(question))
     document_frequency = Counter(word for frequency in frequencies for word in frequency if word in query)
     ranked = []
@@ -59,6 +78,7 @@ def retrieve(documents: tuple[Document, ...], question: str) -> tuple[Chunk, ...
             if count:
                 df = document_frequency[word]
                 inverse = log(1 + (len(chunks) - df + 0.5) / (df + 0.5))
+                # 2.2 is k1+1; 0.25 is 1-b in the BM25 length normalization.
                 score += inverse * count * 2.2 / (count + 1.2 * (0.25 + 0.75 * length / average))
         if score > 0:
             ranked.append(Chunk(chunk.paragraphs, score))
@@ -66,6 +86,7 @@ def retrieve(documents: tuple[Document, ...], question: str) -> tuple[Chunk, ...
 
 
 def candidate_passages(chunks: tuple[Chunk, ...]) -> tuple[Passage, ...]:
+    """Deduplicate overlapping paragraphs while preserving ranked encounter order."""
     found = {}
     for chunk in chunks:
         for part in chunk.paragraphs:
@@ -74,6 +95,11 @@ def candidate_passages(chunks: tuple[Chunk, ...]) -> tuple[Passage, ...]:
 
 
 def replay_select(question: str, candidates: tuple[Passage, ...]) -> dict:
+    """Choose the smallest set of up to three passages covering every query term.
+
+    This deterministic baseline tests lexical coverage, not meaning or entailment.
+    Combination order makes equal-size choices follow retrieved candidate order.
+    """
     wanted = set(tokens(question))
     if wanted:
         for count in range(1, min(3, len(candidates)) + 1):
@@ -85,6 +111,12 @@ def replay_select(question: str, candidates: tuple[Passage, ...]) -> dict:
 
 
 def render_selection(selection: object, candidates: tuple[Passage, ...], snapshot: Snapshot) -> tuple[str, list[dict]]:
+    """Validate untrusted IDs and construct answer/citations solely from the snapshot.
+
+    Replay and model selections cross the same boundary. Extra prose/fields,
+    duplicate or unknown IDs, and a status inconsistent with its IDs fail closed.
+    The caller must supply candidates from host-filtered retrieval.
+    """
     if not isinstance(selection, dict) or set(selection) != {"status", "passage_ids"}:
         raise AgentError("invalid_selection")
     state, selected = selection["status"], selection["passage_ids"]
@@ -102,6 +134,7 @@ def render_selection(selection: object, candidates: tuple[Passage, ...], snapsho
             raise AgentError("invalid_selection")
         part = allowed[passage_id]
         document = sources.get(part.document.id)
+        # Membership must match an actual paragraph, not just a plausible ID/offset.
         if document != part.document or part not in passages(document):
             raise AgentError("invalid_selection")
         citations.append({"document_id": document.id, "title": document.title,

@@ -1,3 +1,5 @@
+"""Expose one stateless question as JSON, with stable machine-readable exit codes."""
+
 import argparse
 import json
 import sys
@@ -7,11 +9,17 @@ from .engine import empty_result, run
 
 
 class Parser(argparse.ArgumentParser):
+    """Route argument errors through sanitized JSON instead of echoing raw arguments."""
+
     def error(self, message):
         raise AgentError("invalid_input")
 
 
 def main(argv=None) -> int:
+    """Translate CLI options into host scope; the engine owns validation and execution.
+
+    Answer/abstention exit 0, runtime failure 1, invalid input 2, interruption 130.
+    """
     try:
         parser = Parser(description="Retrieve exact passages from synthetic AtlasDesk support documents.")
         commands = parser.add_subparsers(dest="command", required=True)

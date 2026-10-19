@@ -28,6 +28,20 @@ Audience/version/date filters run **before** ranking. Public scope can retrieve 
 
 Each run performs at most one search and one model request, with no retries or external tools. Empty evidence or conservative replay coverage failure abstains; corrupt input, invalid citations and provider failures terminate without an answer. Querying writes no state.
 
+## Source reading guide
+
+Start with `engine.run`, then follow the evidence through these modules. Code
+docstrings define the terms and inline comments explain the key invariants.
+
+| Module | Review focus |
+| --- | --- |
+| [`engine.py`](src/knowledge_agent/engine.py) | Single-pass flow, early abstention, call bounds and cancellation/cleanup. |
+| [`contracts.py`](src/knowledge_agent/contracts.py) | Request scope, strict parsing and shared lexical normalization. |
+| [`corpus.py`](src/knowledge_agent/corpus.py) | Snapshot provenance, character offsets and filtering before exposure. |
+| [`retrieval.py`](src/knowledge_agent/retrieval.py) | Chunk versus passage, BM25 scores, replay coverage and host-built citations. |
+| [`provider.py`](src/knowledge_agent/provider.py) | Optional selector authority, transport settings and response validation. |
+| [`cli.py`](src/knowledge_agent/cli.py) | Command options and JSON/exit-code boundary. |
+
 ## Setup and run
 
 Prerequisites: Python 3.14 and uv. Run from this case directory:
@@ -76,6 +90,13 @@ UV_CACHE_DIR=/tmp/agent-atlas-uv-cache uv run --locked --offline --extra live py
 ```
 
 The `live` extra installs the pinned SDK for transport mocks; this test command does not make live API calls. Offline `uv` commands require previously cached dependencies. Use `uv sync --locked --extra live` first on a new machine.
+
+Comment/docstring review on 19 October 2026 re-ran the command above: **181 tests
+passed** in fixture/mocked-provider mode. All seven annotated Python modules
+matched the pre-edit executable AST after excluding docstrings, and
+`git diff --check -- agents/04-knowledge-retrieval` passed from the repository root.
+This review changed explanations only; live-model and deployment evidence remains
+unchanged.
 
 Additional checks performed on 19 October 2026:
 

@@ -1,3 +1,9 @@
+"""Optional single-call passage selector; the model never authors the final answer.
+
+The adapter checks transport/envelope shape. Local citation validation remains
+mandatory after parsing: structured output alone cannot authorize evidence.
+"""
+
 from contextlib import contextmanager
 from importlib.resources import files
 import json
@@ -16,7 +22,11 @@ MAX_OUTPUT_TOKENS = 512
 
 @contextmanager
 def isolated_sdk_settings():
-    # This CLI is synchronous; restore process settings after each SDK operation.
+    """Suppress ambient headers/logging for this synchronous CLI, then restore them.
+
+    These are process-wide changes, so this context is not safe for concurrent
+    embedding in a server. Logging suppression also covers transport messages.
+    """
     names = ("OPENAI_LOG", "OPENAI_CUSTOM_HEADERS")
     removed = {name: os.environ.pop(name) for name in names if name in os.environ}
     previous_logging = logging.root.manager.disable
@@ -29,6 +39,7 @@ def isolated_sdk_settings():
 
 
 def selection_schema(candidates: tuple[Passage, ...]) -> dict:
+    """Restrict output IDs to this request's candidates; host checks semantics later."""
     return {
         "type": "object", "additionalProperties": False,
         "properties": {
@@ -41,6 +52,11 @@ def selection_schema(candidates: tuple[Passage, ...]) -> dict:
 
 
 def parse_response(response) -> object:
+    """Accept one completed assistant JSON text, with optional reasoning items.
+
+    Inspect the envelope before parsing text so refusals, incomplete generations,
+    tools, annotations, or extra outputs cannot masquerade as valid selections.
+    """
     try:
         data = response.model_dump(mode="json", warnings=False)
         if not isinstance(data, dict):
@@ -87,12 +103,15 @@ def parse_response(response) -> object:
 
 
 class OpenAISelector:
+    """Propose IDs or abstention within host-supplied evidence, with no tool access."""
+
     def __init__(self, client, model: str, instructions: str):
         self.client = client
         self.model = model
         self.instructions = instructions
 
     def select(self, request: Request, candidates: tuple[Passage, ...]) -> object:
+        """Send only eligible candidate evidence in one request; never fall back/retry."""
         payload = {
             "question": request.question, "scope": request.scope(),
             "passages": [{"passage_id": part.id, "text": part.text,
@@ -123,6 +142,11 @@ class OpenAISelector:
 
 
 def preflight_openai(*, environ=None, transport=None) -> OpenAISelector:
+    """Validate explicit credentials/model and construct the client without a request.
+
+    A test transport exercises the real SDK offline. Endpoint, redirects, proxies,
+    retries and timeouts are fixed here rather than inherited from ambient config.
+    """
     environment = os.environ if environ is None else environ
     api_key, model = environment.get("OPENAI_API_KEY"), environment.get("OPENAI_MODEL")
     if not isinstance(api_key, str) or not re.fullmatch(r"[!-~]{1,512}", api_key):
@@ -143,6 +167,8 @@ def preflight_openai(*, environ=None, transport=None) -> OpenAISelector:
                     timeout=TIMEOUT_SECONDS, http_client=http_client,
                     organization="", project="", admin_api_key="", webhook_secret="",
                 )
+            # Ownership has not reached the engine yet; release the transport even
+            # if client construction is interrupted, then preserve that exception.
             except BaseException:
                 http_client.close()
                 raise
