@@ -16,6 +16,12 @@ The domain has six required tasks grouped into research, authoring, review, and 
 
 The planner chooses ordering, additional dependency edges, and qualified worker assignments within this known domain. It cannot invent task completion or bypass mandatory prerequisites. The simulator owns timestamps and task evidence; the release artifact is an in-memory report object emitted only after all six tasks succeed.
 
+## Reading the implementation
+
+Start with [contracts.py](src/planning_agent/contracts.py) for the fixed task vocabulary, proposal/result shapes, and budgets. [controller.py](src/planning_agent/controller.py) contains the agent loop and owns scheduling, observations, revisions, and termination. A DAG is a directed acyclic graph of task dependencies; a tick is simulated time, while the wall budget measures real elapsed time.
+
+Read [validation.py](src/planning_agent/validation.py) for cycle detection, required ancestry, and immutable completed/running records. [backends.py](src/planning_agent/backends.py) supplies replay or model proposals through that same gate. [simulator.py](src/planning_agent/simulator.py) creates synthetic evidence; [fixtures.py](src/planning_agent/fixtures.py) and [cli.py](src/planning_agent/cli.py) define the reproducible entry paths. Source comments explain the authority boundaries and non-obvious scheduling rules alongside the code.
+
 ## Setup and run
 
 From this directory, with [uv](https://docs.astral.sh/uv/) installed:
@@ -48,6 +54,8 @@ UV_CACHE_DIR=/tmp/agent-atlas-uv-cache uv run --locked --extra live planning-age
 `.env.example` lists the variable; `.env` files are never discovered or loaded. Live mode uses `gpt-6-luna` with strict Responses structured output, no tools, `store=false`, 2500 output tokens per proposal, no retries, and at most three proposals including revisions. The official endpoint is explicit; ambient proxy/base-URL overrides do not grant another destination. Provider calls have an overall 20-second timeout and the host run has a 90-second wall budget. Failures do not fall back to replay. Live model behavior remains unverified.
 
 ## Verification
+
+On 2026-10-19, the source-comment and reviewer-guide update was checked locally with `UV_CACHE_DIR=/tmp/agent-atlas-uv-cache uv run --locked --offline pytest -q`: **98 passed in 0.39s** (fixture and mocked-provider modes; no API requests). An ad hoc Python AST comparison against `HEAD`, removing only module/class/function docstrings, matched all nine runtime modules. Generated JSON Schemas matched exactly for all six Pydantic models, and `git diff --check -- agents/02-planning` passed from the repository root. Runtime logic, model prompts, and request schemas were preserved; no live-model or deployment validation was performed.
 
 Executed on 2026-10-18, locally on macOS arm64 with CPython 3.14.8 and uv 0.12.23:
 

@@ -1,3 +1,10 @@
+"""Run the planning agent's observe/propose/validate/execute loop.
+
+The backend only proposes a graph. This controller owns simulated execution,
+resource observations, replanning budgets, evidence, and terminal outcomes.
+All mutable state belongs to one invocation; the report is not durable memory.
+"""
+
 from copy import deepcopy
 import queue
 import threading
@@ -14,6 +21,13 @@ from .validation import unavailable_tasks, validate_plan
 
 
 def _bounded_proposal(planner: Any, context: dict[str, Any], budget: float, live: bool) -> Any:
+    """Bound host waiting without granting the planner access to mutable run state.
+
+    A daemon thread may outlive a timed-out call, but receives only a deep copy of
+    proposal context. This is not thread cancellation; the live backend separately
+    bounds its async request lifetime.
+    """
+
     results: queue.Queue = queue.Queue(maxsize=1)
     timeout = min(budget, REQUEST_SECONDS) if live else budget
 
@@ -37,6 +51,13 @@ def run(scenario: Scenario | dict, planner: Any = None, simulator: Any = None, *
         mode: str = "replay", limits: Limits = Limits(),
         clock: Callable[[], float] = time.monotonic,
         preflight_failure: Failure | None = None) -> dict[str, Any]:
+    """Return one bounded, sanitized report for a synthetic documentation release.
+
+    planner, simulator, and clock are local injection seams for focused checks.
+    They do not grant the model tools. Only six successful host-validated results
+    permit a release artifact; every other terminal outcome leaves it absent.
+    """
+
     report: dict[str, Any] = {
         "status": "failed", "reason": "invalid_input", "mode": mode if mode in ("replay", "live") else "replay",
         "plans": [], "trace": [], "tasks": {task: {"status": "pending", "worker": None,
@@ -49,7 +70,7 @@ def run(scenario: Scenario | dict, planner: Any = None, simulator: Any = None, *
     run_id = uuid4().hex[:16]
     availability: dict[str, bool] = {}
     completed: set[str] = set()
-    running: dict[str, int] = {}
+    running: dict[str, int] = {}  # Task ID -> scheduled finish tick, not a real job.
     plan: Plan | None = None
     applied_events: set[int] = set()
     planner = planner if planner is not None else ReplayPlanner()
@@ -59,15 +80,20 @@ def run(scenario: Scenario | dict, planner: Any = None, simulator: Any = None, *
         report["trace"].append({"event": event, "tick": tick, **fields})
 
     def remaining() -> float:
+        """Check the real-time budget independently of simulated task progress."""
+
         seconds = limits.wall_seconds - (clock() - started)
         if seconds <= 0:
             raise Failure("wall_limit")
         return seconds
 
     def revise():
+        """Validate a new proposal before replacing pending graph/worker choices."""
+
         nonlocal plan
         if report["planning_calls"] >= limits.max_planning_calls:
             raise Failure("planning_limit")
+        # Completed history and in-flight work are immutable across revisions.
         fixed: dict[str, PlannedTask] = {} if plan is None else {
             task.id: task for task in plan.tasks if task.id in completed or task.id in running}
         context = {
@@ -83,6 +109,7 @@ def run(scenario: Scenario | dict, planner: Any = None, simulator: Any = None, *
         report["replans"] = report["planning_calls"] - 1
         raw = _bounded_proposal(planner, context, budget, mode == "live")
         remaining()
+        # A structurally valid model response is still untrusted until this gate.
         proposal = validate_plan(raw, availability, fixed)
         plan = proposal
         report["plans"].append({"revision": report["replans"], "tick": tick, **proposal.model_dump()})
@@ -112,6 +139,8 @@ def run(scenario: Scenario | dict, planner: Any = None, simulator: Any = None, *
             report["batches"] += 1
             by_id = {task.id: task for task in plan.tasks}
             busy_workers = {by_id[task_id].worker for task_id in running}
+            # Stable ID order makes replay inspectable. Global capacity is two;
+            # each worker can serve one task, even when multiple tasks are ready.
             for task_id in sorted(TASKS):
                 task = by_id[task_id]
                 if (task_id in completed or task_id in running or len(running) >= 2
@@ -125,6 +154,8 @@ def run(scenario: Scenario | dict, planner: Any = None, simulator: Any = None, *
                 trace("task_started", task=task_id, worker=task.worker)
             if not running:
                 raise Failure("invalid_plan")
+            # Event-driven simulation jumps to a finish, without sleeping per tick.
+            # Equality is allowed: finishing exactly at the deadline is on time.
             next_tick = min(running.values())
             if next_tick > min(scenario.deadline, limits.max_ticks):
                 tick = min(scenario.deadline, limits.max_ticks)
@@ -140,6 +171,8 @@ def run(scenario: Scenario | dict, planner: Any = None, simulator: Any = None, *
                     result = WorkerResult.model_validate(raw.model_dump() if isinstance(raw, WorkerResult) else raw)
                 except (ValidationError, TypeError, ValueError):
                     raise Failure("invalid_worker_result") from None
+                # Evidence must belong to this exact task/run, not a planner claim
+                # or a successful-looking result copied from another invocation.
                 if (result.task != task_id or result.worker != task.worker
                         or (result.status == "succeeded" and result.evidence != evidence_id(run_id, task_id))
                         or (result.status == "failed" and result.evidence is not None)):
@@ -150,6 +183,8 @@ def run(scenario: Scenario | dict, planner: Any = None, simulator: Any = None, *
                 if result.status == "failed":
                     raise Failure("task_failed")
                 completed.add(task_id)
+            # Observe availability after this finish batch and before starting new
+            # work. Applied indices make each scenario event fire only once.
             changed = False
             for index, event in enumerate(scenario.events):
                 if index not in applied_events and event.after_task in completed:
@@ -167,6 +202,7 @@ def run(scenario: Scenario | dict, planner: Any = None, simulator: Any = None, *
                         raise Failure("resources_unavailable")
                     revise()
         remaining()
+        # This is the sole success gate; the artifact is an in-memory evidence map.
         report["status"], report["reason"] = "completed", "goal_reached"
         report["release_artifact"] = {"id": f"release-{run_id}", "evidence": {
             task_id: report["tasks"][task_id]["evidence"] for task_id in sorted(completed)}}
@@ -185,6 +221,8 @@ def run(scenario: Scenario | dict, planner: Any = None, simulator: Any = None, *
     except Exception:
         report["status"], report["reason"] = "failed", "internal_error"
     if report["status"] != "completed":
+        # Preserve completed evidence, but never imply unfinished work succeeded
+        # or that stopping a simulation rolled back any real-world operation.
         report["release_artifact"] = None
         for task in report["tasks"].values():
             if task["status"] == "running":

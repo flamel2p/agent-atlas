@@ -1,9 +1,13 @@
+"""Bundled synthetic scenarios for normal flow, adaptation, and terminal limits."""
+
 from .contracts import Scenario, WORKERS
 
 EXAMPLES = ("normal", "reviewer-unavailable", "no-reviewer", "deadline", "task-failure")
 
 
 def load_example(name: str) -> Scenario:
+    """Build fresh scenario state so runs cannot share availability/event mutations."""
+
     if name not in EXAMPLES:
         raise ValueError("unknown example")
     data = {
