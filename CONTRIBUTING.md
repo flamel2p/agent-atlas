@@ -7,7 +7,7 @@
 2. Copy `templates/agent/` to `agents/<slug>/`. Replace placeholders and set metadata to `planned` until implementation begins.
 3. Fill the specification with the problem, input/output contract, architecture, state, tool authority, execution and stopping rules, failure behavior, and observable acceptance criteria. Identify source facts, proposed choices, and selected decisions separately.
 4. Choose the language, backend, and local dependencies required by that case. Add code/test/fixture directories and configuration examples when implementation needs them.
-5. Implement and validate the smallest coherent demo. Keep all case-owned resources local. Review substantive behavior before declaring readiness.
+5. Implement and validate the smallest coherent demo. Keep all case-owned resources local. Apply the [code explanation standard](AGENTS.md#code-explanation-standard) with in-code definitions, useful comments/docstrings, and a README source reading guide. Review substantive behavior before declaring readiness.
 6. Update the root catalogue and case README with actual commands, results, and limitations.
 
 The `add-agent` skill packages this workflow; it does not authorize unrelated case changes or publication.
@@ -15,6 +15,8 @@ The `add-agent` skill packages this workflow; it does not authorize unrelated ca
 ## Change an existing case
 
 Read its instructions and contract first. Identify the affected behavior, update its specification where needed, and change only the owned implementation and supporting checks/docs. A bug fix should cover the actual regression or failed contract when a meaningful check is possible. Documentation-only edits do not require unrelated runtime tests.
+
+Keep explanations for changed code aligned with the [code explanation standard](AGENTS.md#code-explanation-standard) and refresh the README source reading guide when entry points or responsibilities change. For documentation-only work, inspect for unintended executable, prompt, schema, or output changes; use targeted equivalence checks when framework-consumed docstrings could affect behavior.
 
 If a change needs sibling internals or common runtime code, stop expanding the case and describe the ownership/API decision first. Do not create a shared framework as a shortcut.
 
@@ -45,7 +47,7 @@ Use these catalogue statuses:
 
 Each implemented case needs at least one observable normal-path criterion and one meaningful failure/limit criterion. Add checks for state, authorization, memory isolation, consensus, or physical invariants where the particular pattern requires them. Do not enforce arbitrary output wording as a substitute for behavioral evidence.
 
-Before marking `demo-ready`, reconcile independent review findings and update README/SPEC/catalogue together. The parent Codex integrates work and owns this final assessment.
+Before marking `demo-ready`, check that source explanations match the implementation and contract, and that the README source reading guide links to real code. Reconcile independent review findings and update README/SPEC/catalogue together. The parent Codex integrates work and owns this final assessment.
 
 ## Root governance
 

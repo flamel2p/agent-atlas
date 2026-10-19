@@ -12,6 +12,10 @@ Describe the target user, learning objective, inputs, outputs, and limits. Link 
 
 Summarize the actual components and numbered input-to-output flow. Identify tools, state, stopping conditions, and failure behavior. Label proposed architecture until implemented.
 
+## Source reading guide
+
+Once implemented, link the actual entry point and core modules in a useful reading order. State what a reviewer should inspect in each: contracts, control flow, state, authority, provider/tool boundaries, or validation as applicable. Follow the root [code explanation standard](../../AGENTS.md#code-explanation-standard); keep definitions and decision explanations alongside the code. Until then: no source implementation is available to review.
+
 ## Setup and run
 
 After selecting a runtime, record prerequisites, local dependency/configuration commands, entry point, and a reproducible fixture example. Until then: no runnable implementation is available.

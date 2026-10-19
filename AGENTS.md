@@ -26,6 +26,17 @@ Implement validation, tool authority, loop/retry bounds, and error handling in e
 
 Report checks actually run. Separate fixture/simulation, mocked-provider, live-model, and deployment evidence. Do not weaken checks or relabel failure as success to reach `demo-ready`. Do not claim production qualification from a runnable demo.
 
+## Code explanation standard
+
+All new cases and code changes must include reviewer-focused explanations alongside the implementation, consistent with `SPEC.md`:
+
+- Use module docstrings or equivalent comments to define the agent's purpose, execution flow, and component responsibilities. Document the main interfaces and non-obvious domain types, including relevant inputs, outputs, invariants, and state ownership/lifetime.
+- Define specialized terms where they first matter, such as DAGs, confidence, memory roles, chunks/passages, or evidence provenance. Explain their meaning in this case and the limits of any guarantee.
+- Add concise inline comments explaining why non-obvious policy gates, validation, state transitions, scheduling/ranking decisions, permitted effects, loop/retry bounds, or failure/cancellation handling exist. Make host authority versus model proposals clear wherever they meet.
+- Keep explanations accurate and proportionate. Focus on intent, constraints, and tradeoffs; avoid line-by-line narration, comments that repeat obvious syntax, or mandatory docstrings for trivial helpers. Comments do not replace executable controls, checks, or the behavior contract.
+- Update explanations when the code changes. For documentation-only work, preserve executable logic, prompts, generated schemas, and public output. Where a framework consumes docstrings as schema descriptions or prompt content, use ordinary comments unless that behavior change is explicitly in scope; Pydantic model class docstrings are one example.
+- Include a linked source reading guide in each implemented case's README, identifying the entry point, core modules, and what a reviewer should inspect in each.
+
 ## Development workflows
 
 Use `$add-agent`, `$change-agent`, and `$verify-agent` for their matching workflows; their descriptions also support implicit selection. Read `CONTRIBUTING.md` for the maintained procedure and templates. Add skills only for a recurring workflow with a distinct trigger.
@@ -40,4 +51,4 @@ Before closing a task, update affected docs and catalogue status; report behavio
 
 ## Code review rules
 
-Flag sibling-case coupling, scope drift, unsupported source claims, unchecked tool effects, missing stopping/failure behavior, weakened acceptance checks, secret exposure, and README/SPEC behavior drift. Prefer concrete correctness findings with file/line evidence over cosmetic feedback.
+Flag sibling-case coupling, scope drift, unsupported source claims, unchecked tool effects, missing stopping/failure behavior, weakened acceptance checks, secret exposure, and README/SPEC behavior drift. Check the code explanation standard; flag missing or misleading explanations that obscure behavior, authority, or invariants. Prefer concrete correctness findings with file/line evidence over cosmetic feedback.
