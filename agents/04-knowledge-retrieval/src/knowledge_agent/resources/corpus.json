@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "documents": [
+    {
+      "id": "subscription-policy-v2", "title": "AtlasDesk subscription cancellation", "revision": "2026-10-r2",
+      "product": "atlasdesk", "version": "2.0", "audience": "public",
+      "effective_from": "2026-10-01", "effective_until": null, "reviewed_at": "2026-10-10",
+      "text": "To cancel your AtlasDesk subscription, open Settings, choose Billing, and select Cancel subscription. Only the workspace owner can confirm cancellation.\n\nCancellation stops the next renewal. Your subscription stays active until the end of the paid billing period, and cancellation does not automatically refund earlier payments.\n\nAfter cancellation, export any workspace data you need before the paid billing period ends. The workspace becomes read-only when that period ends."
+    },
+    {
+      "id": "billing-guide-v2", "title": "AtlasDesk billing and invoices", "revision": "2026-10-r1",
+      "product": "atlasdesk", "version": "2.0", "audience": "public",
+      "effective_from": "2026-10-01", "effective_until": null, "reviewed_at": "2026-10-12",
+      "text": "AtlasDesk accepts payment by credit card or bank transfer. Invoices are available in Settings under Billing after a payment settles.\n\nTo update the billing email, the workspace owner opens Settings, chooses Billing details, and saves the new email address."
+    },
+    {
+      "id": "support-guide-v2", "title": "AtlasDesk support hours", "revision": "2026-10-r1",
+      "product": "atlasdesk", "version": "2.0", "audience": "public",
+      "effective_from": "2026-10-01", "effective_until": null, "reviewed_at": "2026-10-15",
+      "text": "AtlasDesk support is available Monday to Friday from 09:00 to 17:00 Malaysia time, excluding public holidays. Submit a support ticket from the Help menu."
+    },
+    {
+      "id": "staff-retention-v2", "title": "Internal retention escalation", "revision": "2026-10-staff-r1",
+      "product": "atlasdesk", "version": "2.0", "audience": "staff",
+      "effective_from": "2026-10-01", "effective_until": null, "reviewed_at": "2026-10-14",
+      "text": "Staff handling a retention escalation must record the case in the internal retention queue. The retention code is STAFF-RETENTION-42. Staff cannot cancel a subscription on behalf of the workspace owner."
+    },
+    {
+      "id": "subscription-policy-v1", "title": "Legacy cancellation procedure", "revision": "2026-10-legacy-r1",
+      "product": "atlasdesk", "version": "1.0", "audience": "public",
+      "effective_from": "2026-01-01", "effective_until": null, "reviewed_at": "2026-10-10",
+      "text": "To cancel a version 1.0 subscription, send a cancellation request from the legacy account portal. This LEGACY-ONLY procedure does not apply to version 2.0."
+    },
+    {
+      "id": "expired-promotion-v2", "title": "Expired cancellation promotion", "revision": "2026-09-promo",
+      "product": "atlasdesk", "version": "2.0", "audience": "public",
+      "effective_from": "2026-09-01", "effective_until": "2026-10-01", "reviewed_at": "2026-09-20",
+      "text": "The EXPIRED-PROMO offered a subscription cancellation rebate during September. This promotion ended on 1 October 2026."
+    },
+    {
+      "id": "future-policy-v2", "title": "Upcoming cancellation policy", "revision": "2026-11-draft",
+      "product": "atlasdesk", "version": "2.0", "audience": "public",
+      "effective_from": "2026-11-01", "effective_until": null, "reviewed_at": "2026-10-10",
+      "text": "The FUTURE-POLICY introduces a subscription cancellation confirmation screen in November. It is not effective before November."
+    },
+    {
+      "id": "stale-refund-v2", "title": "Unreviewed refund note", "revision": "2026-06-note",
+      "product": "atlasdesk", "version": "2.0", "audience": "public",
+      "effective_from": "2026-01-01", "effective_until": null, "reviewed_at": "2026-06-01",
+      "text": "The STALE-REFUND note describes an old manual refund procedure for subscription cancellation. This note requires review before use."
+    }
+  ]
+}
