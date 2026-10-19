@@ -1,3 +1,11 @@
+"""User-scoped episodic memory and explicit preference state in local SQLite.
+
+Episodes record interaction metadata, not factual evidence or generated answer
+text. Preference state is separate so history relevance and trimming cannot
+hide an otherwise eligible explicit preference. The host supplies the user
+namespace; this layer does not authenticate it.
+"""
+
 from datetime import datetime, timedelta
 import json
 import os
@@ -34,6 +42,7 @@ SCHEMA = {
 
 
 def _regular_single_link(path: Path) -> None:
+    """Reject existing symlinks, special files, and hard-linked state files."""
     try:
         info = path.lstat()
     except FileNotFoundError:
@@ -43,11 +52,17 @@ def _regular_single_link(path: Path) -> None:
 
 
 def _directory(path: Path) -> None:
+    """Require a real directory without following a link at this path."""
     if not stat.S_ISDIR(path.lstat().st_mode):
         raise Failure("unsafe_state_path")
 
 
 def state_path(case_root: Path, name: str) -> tuple[Path, bool]:
+    """Resolve a named store under private-data and report whether it was created.
+
+    SQLite sidecars receive the same checks as the database. These checks assume
+    sequential local use; they do not prevent a hostile filesystem race.
+    """
     validate_name(name)
     _directory(case_root)
     directory = case_root / "private-data"
@@ -65,23 +80,33 @@ def state_path(case_root: Path, name: str) -> tuple[Path, bool]:
 
 
 class Store:
+    """Hold one explicit transaction from recall until persist/forget commits.
+
+    Context exit always closes and rolls back any uncommitted work. The short
+    lock timeout makes contention a terminal failure rather than an open wait.
+    """
+
     def __init__(self, name: str, *, case_root: Path = CASE_ROOT):
         self.name = name
         self.case_root = case_root
         self.connection: sqlite3.Connection | None = None
 
     def __enter__(self):
+        """Open validated state, check its exact schema, then acquire a write lock."""
         try:
             path, created = state_path(self.case_root, self.name)
             self.connection = sqlite3.connect(path.as_uri() + "?mode=rw", uri=True, timeout=0.5, isolation_level=None)
             self.connection.row_factory = sqlite3.Row
             self.connection.execute("PRAGMA trusted_schema = OFF")
             if created:
+                # Schema setup is separate: a failed first turn may leave an empty store.
                 self.connection.execute("BEGIN IMMEDIATE")
                 for statement in SCHEMA.values():
                     self.connection.execute(statement)
                 self.connection.execute(f"PRAGMA user_version = {SCHEMA_VERSION}")
                 self.connection.commit()
+            # Exact schema equality rejects unexpected tables, indexes, and triggers.
+            # GLOB treats '_' literally, so sqlite-prefix lookalikes cannot evade this check.
             schema = {row["name"]: row["sql"] for row in self.connection.execute(
                 "SELECT name, sql FROM sqlite_master WHERE name NOT GLOB 'sqlite_*'"
             )}
@@ -98,6 +123,7 @@ class Store:
         self.close()
 
     def close(self) -> None:
+        """Roll back partial changes; a prior successful commit remains durable."""
         if self.connection is not None:
             try:
                 self.connection.rollback()
@@ -106,7 +132,13 @@ class Store:
                 self.connection = None
 
     def recall(self, user: str, query: str, now: datetime) -> tuple[dict | None, list[dict]]:
+        """Recall an eligible preference and up to three relevant episodes for one user.
+
+        Preference eligibility is independent of lexical matching. Episodes are
+        ranked by token overlap, then newest timestamp and record ID.
+        """
         cutoff = timestamp(now - timedelta(days=30))
+        # Strict '>' excludes the exact expiry boundary without deleting during recall.
         row = self.connection.execute(
             "SELECT * FROM preferences WHERE user_id = ? AND created_at > ?", (user, cutoff)
         ).fetchone()
@@ -123,6 +155,7 @@ class Store:
         ranked = []
         query_tokens = tokens(query)
         allowed = {entry["id"] for entry in faq()}
+        # Persist retains at most 20 episodes per user; recall also bounds its read window.
         for row in self.connection.execute(
             "SELECT * FROM episodes WHERE user_id = ? AND created_at > ? ORDER BY created_at DESC, record_id DESC LIMIT 20",
             (user, cutoff),
@@ -150,6 +183,7 @@ class Store:
 
     @staticmethod
     def _validate_record(row: sqlite3.Row) -> None:
+        """Treat persisted fields as data to validate, not inherently trusted state."""
         try:
             validate_name(row["session_id"])
             validate_timestamp(row["created_at"])
@@ -159,9 +193,15 @@ class Store:
             raise Failure("storage_data") from None
 
     def persist(self, request: Request, preference: dict, selection: list[str], now: datetime) -> int:
+        """Atomically prune, optionally update explicit style, and append an episode.
+
+        The caller supplies a validated request and selection. Only the current
+        user's rows change; a failure before commit is rolled back on context exit.
+        """
         cutoff = timestamp(now - timedelta(days=30))
         for table in ("episodes", "preferences"):
             self.connection.execute(f"DELETE FROM {table} WHERE user_id = ? AND created_at <= ?", (request.user, cutoff))
+        # Recalling or applying a style does not renew its retention clock.
         if request.remember_style is not None:
             self.connection.execute(
                 """INSERT INTO preferences VALUES (?, ?, ?, ?, ?)
@@ -169,10 +209,12 @@ class Store:
                 session_id = excluded.session_id, created_at = excluded.created_at, style = excluded.style""",
                 (request.user, preference["record_id"], request.session, timestamp(now), request.remember_style),
             )
+        # Store provenance and selected IDs, never rendered answers as future evidence.
         cursor = self.connection.execute(
             "INSERT INTO episodes (user_id, session_id, created_at, query, faq_ids, style) VALUES (?, ?, ?, ?, ?, ?)",
             (request.user, request.session, timestamp(now), request.query, json.dumps(selection), preference["style"]),
         )
+        # History trimming is separate from preference expiry, preserving the active style.
         self.connection.execute(
             """DELETE FROM episodes WHERE user_id = ? AND record_id NOT IN
             (SELECT record_id FROM episodes WHERE user_id = ? ORDER BY created_at DESC, record_id DESC LIMIT 20)""",
@@ -182,6 +224,7 @@ class Store:
         return cursor.lastrowid
 
     def forget(self, user: str) -> dict:
+        """Commit logical deletion of one namespace; repeating it returns zero counts."""
         counts = {}
         for table in ("preferences", "episodes"):
             counts[table] = self.connection.execute(f"DELETE FROM {table} WHERE user_id = ?", (user,)).rowcount

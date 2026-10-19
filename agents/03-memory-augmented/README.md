@@ -22,7 +22,16 @@ Validate a request, recall the user's preference and up to three relevant episod
 
 The FAQ covers working memory, episodic memory, semantic memory, explicit preferences, retention/forgetting, and lexical retrieval. Candidate ranking counts shared lowercase ASCII tokens after stop-word removal; ties use FAQ ID order. Episode ranking counts shared query tokens, then sorts by newest UTC timestamp and record ID. This deliberately simple baseline can miss synonyms or select a weak match; it is not a semantic relevance guarantee.
 
-The source lives in `src/memory_agent/`: `agent.py` controls the turn, `storage.py` owns SQLite, `knowledge.py` retrieves and renders the packaged `data/faq.json`, `provider.py` limits optional model access, and `cli.py` exposes commands.
+For a source review, follow this reading order. Module and function docstrings define the memory roles and authority boundaries; inline comments explain the less obvious transaction and validation decisions.
+
+| Source | What to review |
+| --- | --- |
+| [`contracts.py`](src/memory_agent/contracts.py) | Validated request fields, namespace limits, canonical timestamps, and sanitized terminal results |
+| [`agent.py`](src/memory_agent/agent.py) | One-turn flow, working memory, explicit preference authority, evidence selection, and commit-before-success behavior |
+| [`knowledge.py`](src/memory_agent/knowledge.py) | Read-only semantic memory, lexical ranking, selection validation, and curated answer rendering |
+| [`storage.py`](src/memory_agent/storage.py) | User-scoped episodic memory, exact schema checks, transaction rollback, recall ranking, retention, and logical deletion |
+| [`provider.py`](src/memory_agent/provider.py) | Identity-minimized context, strict output parsing, transport restrictions, and a single bounded model call |
+| [`cli.py`](src/memory_agent/cli.py) | Explicit ask/forget commands and the JSON/exit-code boundary |
 
 ## Setup and run
 
@@ -142,6 +151,7 @@ Verified scope: The same 108-test run includes scoped/identity-minimized context
 
 Additional verification on 2026-10-19:
 
+- The source-comment/docstring review reran `UV_CACHE_DIR=/tmp/agent-atlas-uv-cache uv run --locked --offline --extra live pytest -q`: all 108 tests passed. A one-off AST comparison of all 14 case Python files against `HEAD`, removing only module/class/function docstrings, found no executable syntax changes; `git diff --check -- agents/03-memory-augmented` passed. This adds fixture/mocked-provider evidence only; no live call was made.
 - Fifteen separate credential-free CLI processes passed cross-session recall, original preference provenance, cross-user isolation, correction, unsupported knowledge, scoped/idempotent forgetting, and traversal rejection.
 - A copy of this case alone was installed outside the repository, excluding `.venv`, private state, build output, and caches. With `OPENAI_*`, `MEMORY_AGENT_*`, `VIRTUAL_ENV`, and `PYTHONPATH` removed, `UV_CACHE_DIR=/tmp/agent-atlas-uv-cache uv sync --locked --offline --extra live` passed, and the full verification command above passed all 108 tests. Two separate replay processes then verified durable recall in that copy.
 - The exact offline setup/help and all 11 README walkthrough commands passed in that isolated copy with `UV_OFFLINE=true`, including expected exit code 2 for unsupported knowledge and final example cleanup.

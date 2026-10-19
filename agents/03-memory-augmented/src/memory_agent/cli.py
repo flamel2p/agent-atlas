@@ -1,3 +1,5 @@
+"""Explicit ask/forget commands with JSON terminal results and stable exit codes."""
+
 import argparse
 import json
 
@@ -6,11 +8,14 @@ from .contracts import Failure, Request, STYLES, terminal
 
 
 class Parser(argparse.ArgumentParser):
+    """Route malformed arguments through the same sanitized JSON failure contract."""
+
     def error(self, message):
         raise Failure("invalid_input")
 
 
 def parser() -> Parser:
+    """Keep memory writes explicit: ask may remember a style; forget deletes a user."""
     result = Parser(description="Synthetic study assistant with explicit scoped memory; replay is offline.")
     subcommands = result.add_subparsers(dest="command", required=True, parser_class=Parser)
     question = subcommands.add_parser("ask", help="Answer using the FAQ and scoped memory")
@@ -27,6 +32,7 @@ def parser() -> Parser:
 
 
 def main(argv: list[str] | None = None) -> int:
+    """Dispatch one local command, emit its terminal result, and stop."""
     try:
         args = parser().parse_args(argv)
         if args.command == "forget":

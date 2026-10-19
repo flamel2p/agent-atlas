@@ -1,3 +1,10 @@
+"""Optional model adapter with authority limited to selecting retrieved FAQ IDs.
+
+The host constructs bounded context and validates the returned selection before
+rendering or persistence. A provider failure is terminal; this module cannot
+write memory, choose identity, or fall back to replay.
+"""
+
 import asyncio
 from contextlib import contextmanager
 import json
@@ -18,6 +25,11 @@ You have no tools, write authority, identity selection, or freeform answer autho
 
 
 def request_payload(query: str, style: str, episodes: list[dict], choices: list[dict], model: str) -> dict:
+    """Project bounded working memory into a strict, tool-free selection request.
+
+    Episode IDs, user IDs, session IDs, and timestamps are omitted. Identifiers
+    typed inside the query remain query content and are not automatically redacted.
+    """
     context = {
         "query": query,
         "style": style,
@@ -41,6 +53,11 @@ def request_payload(query: str, style: str, episodes: list[dict], choices: list[
 
 
 def parse_response(response) -> list[str]:
+    """Accept one completed selection object; reject refusal or ambiguous output.
+
+    This checks the response envelope and shape. ``validate_selection`` in the
+    knowledge module subsequently checks uniqueness and candidate membership.
+    """
     try:
         if response.status != "completed" or getattr(response, "incomplete_details", None) is not None:
             raise Failure("provider_incomplete")
@@ -61,6 +78,7 @@ def parse_response(response) -> list[str]:
         if len(texts) != 1 or not isinstance(texts[0], str) or len(texts[0]) > 4096:
             raise Failure("provider_output")
         def unique_keys(pairs):
+            # Default JSON decoding silently keeps the last duplicate key.
             result = {}
             for key, value in pairs:
                 if key in result:
@@ -79,6 +97,7 @@ def parse_response(response) -> list[str]:
 
 
 async def _request(payload: dict, api_key: str):
+    """Make one SDK request without ambient endpoint, proxy, redirect, or retry policy."""
     try:
         from openai import AsyncOpenAI, DefaultAsyncHttpx2Client
     except ImportError:
@@ -93,6 +112,7 @@ async def _request(payload: dict, api_key: str):
 
 @contextmanager
 def quiet_provider_logs():
+    """Temporarily suppress process logging while handling provider context."""
     # This sequential CLI suppresses logging only while handling private provider context.
     previous = logging.root.manager.disable
     logging.disable(logging.CRITICAL)
@@ -103,6 +123,7 @@ def quiet_provider_logs():
 
 
 def live_select(query: str, style: str, episodes: list[dict], choices: list[dict]) -> list[str]:
+    """Validate explicit live configuration and enforce one total request deadline."""
     model = os.environ.get("MEMORY_AGENT_MODEL", "")
     api_key = os.environ.get("OPENAI_API_KEY", "")
     if (
@@ -113,6 +134,7 @@ def live_select(query: str, style: str, episodes: list[dict], choices: list[dict
         raise Failure("provider_config")
     payload = request_payload(query, style, episodes, choices, model)
     async def bounded_request():
+        # Bound the whole async operation in addition to the transport's own timeout.
         async with asyncio.timeout(DEADLINE_SECONDS):
             return await _request(payload, api_key)
     try:

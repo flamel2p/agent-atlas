@@ -1,3 +1,9 @@
+"""Validated turn inputs and the common JSON result shape.
+
+Names are local namespaces, not authenticated identities. Stable failure codes
+cross the CLI boundary; raw storage and provider exception text does not.
+"""
+
 from dataclasses import dataclass
 from datetime import UTC, datetime
 import re
@@ -9,18 +15,22 @@ NAME = re.compile(r"[A-Za-z0-9][A-Za-z0-9_-]{0,63}\Z", re.ASCII)
 
 
 class Failure(Exception):
+    """Carry a safe, machine-readable failure code between host components."""
+
     def __init__(self, code: str):
         self.code = code
         super().__init__(code)
 
 
 def validate_name(value: str) -> str:
+    """Accept a bounded namespace token usable as a user, session, or store name."""
     if not isinstance(value, str) or not NAME.fullmatch(value):
         raise Failure("invalid_input")
     return value
 
 
 def validate_query(value: str) -> str:
+    """Bound query context and reject nonprinting Unicode categories."""
     if (
         not isinstance(value, str)
         or not value.strip()
@@ -32,12 +42,14 @@ def validate_query(value: str) -> str:
 
 
 def timestamp(value: datetime) -> str:
+    """Normalize an aware clock value to fixed-width UTC for SQLite ordering."""
     if value.tzinfo is None or value.utcoffset() is None:
         raise Failure("invalid_clock")
     return value.astimezone(UTC).isoformat(timespec="microseconds").replace("+00:00", "Z")
 
 
 def validate_timestamp(value: str) -> str:
+    """Reject stored timestamps that do not match the canonical UTC encoding."""
     try:
         if timestamp(datetime.fromisoformat(value)) != value:
             raise ValueError
@@ -48,6 +60,12 @@ def validate_timestamp(value: str) -> str:
 
 @dataclass(frozen=True)
 class Request:
+    """One operator-supplied turn; only ``remember_style`` authorizes a preference update.
+
+    Construction does not validate input. ``ask`` calls ``validate`` before
+    opening state, so invalid requests cannot create or modify a store.
+    """
+
     user: str
     session: str
     query: str
@@ -66,6 +84,7 @@ class Request:
 
 
 def terminal(status: str, mode: str, *, code: str | None = None) -> dict:
+    """Start a result with no recalled data, answer, or claimed memory commit."""
     return {
         "status": status,
         "failure_code": code,

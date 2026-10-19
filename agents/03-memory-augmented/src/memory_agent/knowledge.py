@@ -1,3 +1,9 @@
+"""Read-only semantic memory: retrieve and render the packaged course FAQ.
+
+Here, semantic memory means curated factual knowledge, not embedding search.
+Neither user history nor generated answers can extend this corpus at runtime.
+"""
+
 from functools import lru_cache
 from importlib.resources import files
 import json
@@ -10,11 +16,13 @@ STOP_WORDS = frozenset("a an and are as at be by can do for from how i in is it 
 
 
 def tokens(text: str) -> frozenset[str]:
+    """Use distinct lowercase ASCII tokens; repeated words do not boost overlap."""
     return frozenset(re.findall(r"[a-z0-9]+", text.lower())) - STOP_WORDS
 
 
 @lru_cache(maxsize=1)
 def faq() -> tuple[dict, ...]:
+    """Load and validate the bounded packaged corpus once per process."""
     try:
         document = json.loads(files("memory_agent").joinpath("data/faq.json").read_text())
         entries = document["entries"]
@@ -43,9 +51,11 @@ def faq() -> tuple[dict, ...]:
 
 
 def candidates(query: str) -> list[dict]:
+    """Return at most three positive-overlap FAQ entries, breaking ties by ID."""
     query_tokens = tokens(query)
     ranked = []
     for entry in faq():
+        # Search metadata only; answer wording and stored episodes do not set ranking.
         overlap = len(query_tokens & tokens(entry["title"] + " " + " ".join(entry["keywords"])))
         if overlap:
             ranked.append((overlap, entry))
@@ -54,6 +64,11 @@ def candidates(query: str) -> list[dict]:
 
 
 def validate_selection(selection: object, choices: list[dict]) -> list[str]:
+    """Require distinct retrieved IDs; an empty list is a valid abstention.
+
+    This host-side authority check is separate from the provider's JSON schema:
+    well-formed output still cannot cite knowledge outside this turn's candidates.
+    """
     if not isinstance(selection, list) or len(selection) > 3:
         raise Failure("provider_selection")
     if any(not isinstance(item, str) for item in selection) or len(set(selection)) != len(selection):
@@ -65,6 +80,11 @@ def validate_selection(selection: object, choices: list[dict]) -> list[str]:
 
 
 def render(selection: list[str], choices: list[dict], style: str) -> tuple[str, list[dict]]:
+    """Render validated evidence using curated style variants and explicit citations.
+
+    The caller validates the selection first. Model prose is never an input to
+    the final answer, and a style preference changes presentation only.
+    """
     selected = {entry["id"]: entry for entry in choices}
     evidence = [{"id": key, "title": selected[key]["title"], "version": 1} for key in selection]
     if not selection:
