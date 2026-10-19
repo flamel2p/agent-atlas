@@ -1,3 +1,10 @@
+"""Produce advisory proposals without owning tool access or customer responses.
+
+Replay supplies deterministic examples; live makes one optional provider request.
+Both feed the same controller validation and host policy, so neither can grant
+itself permission to execute a proposed action.
+"""
+
 import json
 from typing import Callable
 
@@ -9,12 +16,23 @@ MAX_OUTPUT_TOKENS = 400
 
 
 class ProposalFailure(Exception):
+    """Carry a stable failure label across the provider/controller boundary.
+
+    Raw provider responses and exception messages must not enter the public trace.
+    """
+
     def __init__(self, reason: Reason):
         self.reason = reason
         super().__init__(reason)
 
 
 class ReplayBackend:
+    """Deterministic teaching baseline, not an LLM or confidence calibration.
+
+    Fixture overrides intentionally include invalid/restricted proposals so policy
+    and validation failures can be demonstrated without a provider request.
+    """
+
     def __init__(self, proposal_override: dict | None = None):
         self._proposal_override = proposal_override
 
@@ -27,7 +45,11 @@ class ReplayBackend:
 
 
 class LiveBackend:
-    """Lazy SDK loading keeps deterministic replay provider-independent."""
+    """One structured-output request with no tools, retries or replay fallback.
+
+    Lazy SDK loading keeps replay provider-independent. The injectable client factory
+    lets tests inspect request shape and failures without contacting the provider.
+    """
 
     def __init__(self, api_key: str, client_factory: Callable | None = None):
         self._api_key = api_key
@@ -35,6 +57,7 @@ class LiveBackend:
         self._timeout_errors = (TimeoutError,)
 
     def validate_configuration(self) -> None:
+        """Check credentials and SDK capability locally, without a network call."""
         if not isinstance(self._api_key, str) or not self._api_key.strip():
             raise ProposalFailure("invalid_configuration")
         if self._client_factory is None:
@@ -51,7 +74,10 @@ class LiveBackend:
             raise ProposalFailure("invalid_configuration")
 
     async def propose(self, ticket: Ticket, evidence: StatusEvidence) -> object:
+        """Send synthetic context and return a candidate for host arbitration."""
         self.validate_configuration()
+        # Derive output shape from the same contract used for host validation.
+        # Schema compliance alone does not authorize the requested action.
         schema = Proposal.model_json_schema()
         context = {"ticket": ticket.model_dump(mode="json"), "evidence": evidence.model_dump(mode="json")}
         try:
@@ -75,6 +101,7 @@ class LiveBackend:
                         {"role": "user", "content": json.dumps(context)},
                     ],
                     text={"format": {"type": "json_schema", "name": "support_triage_proposal", "schema": schema, "strict": True}},
+                    # Disables Responses storage; it is not a zero-retention claim.
                     store=False,
                     max_output_tokens=MAX_OUTPUT_TOKENS,
                 )
@@ -86,6 +113,11 @@ class LiveBackend:
 
     @staticmethod
     def _extract_proposal(response: object) -> object:
+        """Accept one completed assistant JSON payload and discard metadata.
+
+        Validate the response envelope before parsing its body: completion, message
+        count/type and refusal are separate checks from proposal schema validation.
+        """
         if getattr(response, "status", None) != "completed":
             raise ProposalFailure("provider_incomplete")
         output = getattr(response, "output", None)
@@ -95,6 +127,7 @@ class LiveBackend:
         for item in output:
             kind = getattr(item, "type", None)
             if kind == "reasoning":
+                # Known metadata is ignored without reading or retaining content.
                 continue
             if kind != "message":
                 raise ProposalFailure("provider_invalid_output")
@@ -111,6 +144,7 @@ class LiveBackend:
         if not isinstance(content, list) or len(content) != 1 or getattr(content[0], "type", None) != "output_text":
             raise ProposalFailure("provider_invalid_output")
         text = getattr(content[0], "text", None)
+        # Bound provider-controlled text before decoding; no raw text is logged.
         if not isinstance(text, str) or not text or len(text) > 10000:
             raise ProposalFailure("provider_invalid_output")
         try:

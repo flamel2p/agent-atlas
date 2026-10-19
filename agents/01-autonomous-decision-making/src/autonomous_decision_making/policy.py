@@ -1,13 +1,21 @@
+"""Deterministic host authority and response templates, independent of cognition.
+
+The controller applies these checks in order: hard gate, evidence validation,
+proposal arbitration, then rendering. Provider suggestions cannot skip a stage.
+"""
+
 from .contracts import Priority, Proposal, Reason, Route, StatusEvidence, Ticket
 
 
 def priority_for(ticket: Ticket) -> Priority:
+    """Assign operational priority without granting additional action authority."""
     if ticket.urgency == "urgent" or ticket.impact == "high" or ticket.request_kind == "security":
         return "high"
     return "elevated" if ticket.customer_tier == "premium" else "normal"
 
 
 def hard_gate(ticket: Ticket) -> Reason | None:
+    """Return the first mandatory handoff reason before tools or cognition run."""
     if ticket.human_requested:
         return "human_requested"
     if ticket.impact == "high":
@@ -20,6 +28,7 @@ def hard_gate(ticket: Ticket) -> Reason | None:
 
 
 def evidence_error(ticket: Ticket, evidence: StatusEvidence) -> Reason | None:
+    """Require a matching, known snapshot within the inclusive 300-second window."""
     if evidence.service != ticket.service:
         return "service_mismatch"
     age = (ticket.scenario_time - evidence.observed_at).total_seconds()
@@ -33,6 +42,13 @@ def evidence_error(ticket: Ticket, evidence: StatusEvidence) -> Reason | None:
 
 
 def arbitrate(proposal: Proposal, evidence: StatusEvidence) -> tuple[Route, Reason, bool]:
+    """Return (selected route, host reason, failure flag) for validated evidence.
+
+    The caller must first apply hard_gate and evidence_error. Ordered early returns
+    encode precedence: restrictions and consistency checks precede confidence, and
+    explicit handoff/guided proposals cannot be promoted by a high confidence score.
+    The flag separates malformed proposals from intentional policy handoffs.
+    """
     if proposal.action in {"refund", "account_change"}:
         return "handoff", "restricted_action", False
     ordinary_pairs = {("autonomous", "status_reply"), ("guided", "ask_clarification"), ("handoff", "handoff")}
@@ -48,10 +64,16 @@ def arbitrate(proposal: Proposal, evidence: StatusEvidence) -> tuple[Route, Reas
         return "guided", "medium_confidence", False
     if evidence.status == "operational":
         return "guided", "healthy_service", False
+    # Unknown evidence was rejected upstream; only degraded/outage can reach here.
     return "autonomous", "supported_incident", False
 
 
 def render_response(route: Route, evidence: StatusEvidence) -> str | None:
+    """Prepare host-authored text from accepted evidence; send no message.
+
+    No model-authored prose is rendered, and a status observation never establishes
+    that an issue was resolved or that a restoration time is known.
+    """
     if route == "handoff":
         return None
     observation = (

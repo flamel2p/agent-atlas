@@ -53,9 +53,17 @@ Trusted synthetic metadata supplies request kind, impact, human preference, and 
 
 Every remaining decision reads one allowlisted `api` or `dashboard` snapshot. Unknown status, mismatched service, invalid shape, future timestamps, or evidence older than 300 seconds fails safely before cognition. One validated proposal then passes through host policy: restricted effects are denied; contradictory route/action pairs fail; candidate handoff or confidence below 0.50 hands off; guided proposals, confidence from 0.50 to below 0.80, or operational service guide; only autonomous/status-reply proposals at or above 0.80 with degraded/outage evidence produce an autonomous reply. Confidence is an uncalibrated routing input. Host templates own all rendered text.
 
-Code boundaries: `contracts.py` validates inputs/results, `fixtures.py` owns synthetic lookup, `backends.py` proposes, `policy.py` controls authority and rendering, `controller.py` bounds the run, and `cli.py` selects the example/mode and renders JSON.
+For a source review, read the modules in this order:
+
+1. [`contracts.py`](src/autonomous_decision_making/contracts.py) defines trusted intake, status evidence, advisory proposals and sanitized reports. A valid shape does not grant action authority.
+2. [`controller.py`](src/autonomous_decision_making/controller.py) is the agent's bounded decision loop: fresh run state, hard gates, one lookup, one proposal, arbitration and termination.
+3. [`policy.py`](src/autonomous_decision_making/policy.py) defines evidence freshness, ordered routing rules and host-authored replies. Priority and confidence cannot override hard gates.
+4. [`fixtures.py`](src/autonomous_decision_making/fixtures.py) and [`backends.py`](src/autonomous_decision_making/backends.py) supply replaceable observations/proposals; they cannot execute customer actions.
+5. [`cli.py`](src/autonomous_decision_making/cli.py) selects the scenario/backend, validates live configuration before execution, and emits JSON with the outcome's exit code.
 
 ## Verification
+
+Documentation review on 2026-10-19: `UV_CACHE_DIR=/tmp/agent-atlas-uv-cache uv run --locked --offline pytest -q` passed **123 tests in 0.41s** (fixtures and mocked provider, no live calls). A source AST comparison against `HEAD`, excluding only module/class/function docstrings, matched all eight Python source files; all six contract JSON schemas also matched, including the live proposal schema. `git diff --check -- agents/01-autonomous-decision-making` passed from the repository root. The added explanations and source reading map do not change the selected behavior or readiness scope.
 
 Executed locally on macOS arm64 with Python 3.14.8 and uv 0.12.23:
 
