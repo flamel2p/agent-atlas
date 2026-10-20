@@ -1,6 +1,6 @@
 # Tool-Using case instructions
 
-Scope: `agents/tool-using/`.
+Scope: `agents/07-tool-using/`.
 
 Read root `AGENTS.md`, this file, `SPEC.md`, and README before work. Keep related tools, code, manifests, configuration, tests, fixtures, state, and artifacts within this case. Do not depend on sibling cases.
 

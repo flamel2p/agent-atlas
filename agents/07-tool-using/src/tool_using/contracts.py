@@ -1,3 +1,11 @@
+"""Shared values passed between the CLI, decision backends, and run controller.
+
+Backends propose ToolCall values; the host dispatcher decides whether to execute
+them. These dataclasses carry data without validating it. CLI parsing, backend
+response parsing, and tool validation enforce their respective boundaries.
+Failure provides the fixed public error vocabulary without raw exception text.
+"""
+
 from dataclasses import dataclass, field
 import re
 from typing import Any, Literal
@@ -13,6 +21,12 @@ RUN_SECONDS = 120.0
 
 @dataclass(frozen=True)
 class RunConfig:
+    """One invocation's mode, task, and host-selected output authority.
+
+    Replay selects a named script; live mode supplies a task and no example.
+    The output format governs chart permission regardless of the task's wording.
+    """
+
     mode: Literal["replay", "live"] = "replay"
     task: str = "Compare total revenue by channel"
     output_format: Literal["table", "bar"] = "bar"
@@ -21,6 +35,11 @@ class RunConfig:
 
 @dataclass(frozen=True)
 class ToolCall:
+    """An untrusted proposal with JSON arguments and its backend correlation ID.
+
+    A call ID ties a provider result to its proposal. It grants no tool authority.
+    """
+
     name: str
     arguments: str
     call_id: str
@@ -28,6 +47,12 @@ class ToolCall:
 
 @dataclass(frozen=True)
 class Decision:
+    """One backend response and sanitized provider accounting for this run.
+
+    An empty calls tuple requests completion; the host still checks required
+    results. Multiple calls are rejected before any execution.
+    """
+
     calls: tuple[ToolCall, ...] = ()
     metadata: dict[str, Any] = field(default_factory=dict)
 
@@ -50,6 +75,8 @@ MESSAGES = {
 
 
 class Failure(Exception):
+    """A terminal outcome with a stable code and bounded public diagnostics."""
+
     def __init__(
         self,
         code: str,
@@ -65,6 +92,7 @@ class Failure(Exception):
         self.code = code
         self.status = status
         self.phase = phase
+        # Retain useful provider identifiers without exposing arbitrary error data.
         self.request_id = request_id if isinstance(request_id, str) and re.fullmatch(r"req_[A-Za-z0-9_-]{1,100}", request_id) else None
         self.http_status = http_status if type(http_status) is int and 100 <= http_status <= 599 else None
 

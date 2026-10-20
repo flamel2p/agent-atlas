@@ -1,3 +1,12 @@
+"""The fixed tool registry, run-local dispatcher, and reporting computations.
+
+ToolSet loads one immutable snapshot of the bundled CSV, admits schema-validated
+proposals, and validates computed results before retaining them. Dataset
+provenance is its fixed ID plus the SHA-256 digest of the loaded bytes; it binds
+results to this snapshot without certifying the truth of the source data.
+Only rendering writes a staged chart. The controller owns final publication.
+"""
+
 from __future__ import annotations
 
 import csv
@@ -30,10 +39,13 @@ Metric = Literal["spend_sen", "revenue_sen"]
 Channel = Literal["Email", "Search", "Social"]
 
 
+# These models define validation and generated schemas. Use ordinary comments here
+# because Pydantic class docstrings would also change schema descriptions.
 class StrictModel(BaseModel):
     model_config = ConfigDict(strict=True, extra="forbid", frozen=True)
 
 
+# The empty object permits inspection without accepting a file or dataset selector.
 class InspectArguments(StrictModel):
     pass
 
@@ -42,16 +54,20 @@ class SumArguments(StrictModel):
     metric: Metric
 
 
+# A summary handle refers to host state; it carries neither chart data nor a path.
 class ChartArguments(StrictModel):
     summary_id: str = Field(min_length=1, max_length=100)
 
 
+# Sen are integer hundredths of RM. Display text is checked against those integers.
 class Total(StrictModel):
     channel: Channel
     total_sen: int = Field(ge=0, le=MAX_ROWS * 100000000)
     display: str
 
 
+# One computed metric over the entire snapshot. The host creates summary_id for
+# this run; ToolSet additionally checks totals, ordering, display, and provenance.
 class Summary(StrictModel):
     summary_id: str = Field(pattern=r"^summary-[a-f0-9]{32}$")
     dataset_id: Literal["campaign-demo-v1"]
@@ -64,6 +80,7 @@ class Summary(StrictModel):
     totals: list[Total] = Field(min_length=1, max_length=3)
 
 
+# Describes the loaded snapshot and supported operations, not arbitrary CSV data.
 class Inspection(StrictModel):
     dataset_id: Literal["campaign-demo-v1"]
     dataset_sha256: str = Field(pattern=r"^[a-f0-9]{64}$")
@@ -75,6 +92,8 @@ class Inspection(StrictModel):
     unit: Literal["sen"]
 
 
+# References the staged chart's eventual public path. Validation checks its stored
+# summary handle, run-owned path, and PNG dimensions before publication.
 class Chart(StrictModel):
     artifact_id: str = Field(pattern=r"^chart-[a-f0-9]{32}$")
     summary_id: str = Field(pattern=r"^summary-[a-f0-9]{32}$")
@@ -85,6 +104,8 @@ class Chart(StrictModel):
 
 @dataclass(frozen=True)
 class Row:
+    """A validated fixture row with integer sen amounts and no mutable fields."""
+
     date: date
     channel: str
     spend_sen: int
@@ -92,6 +113,8 @@ class Row:
 
 
 def tool_schemas(output_format: str) -> list[dict]:
+    """Advertise permitted proposals; ToolSet enforces the same format rule."""
+
     if output_format not in ("table", "bar"):
         raise Failure("invalid_input", status="rejected", phase="configuration")
     tools = [
@@ -125,6 +148,7 @@ def _check_location(path: Path, base: Path) -> None:
 
 
 def _read_bounded(path: Path, limit: int) -> bytes:
+    # Regular-file and byte checks avoid trusting a size hint or blocking on a FIFO.
     descriptor = os.open(path, os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0) | getattr(os, "O_NONBLOCK", 0))
     with os.fdopen(descriptor, "rb") as source:
         metadata = os.fstat(source.fileno())
@@ -137,6 +161,12 @@ def _read_bounded(path: Path, limit: int) -> bytes:
 
 
 def _load_dataset(case_root: Path) -> tuple[tuple[Row, ...], str]:
+    """Return an immutable row tuple and the digest of the bytes parsed once.
+
+    Together these form the run's snapshot. Later tools use that snapshot even
+    if the fixture changes on disk.
+    """
+
     path = case_root / "fixtures" / "campaigns.csv"
     try:
         _check_location(path, case_root)
@@ -175,6 +205,8 @@ def _load_dataset(case_root: Path) -> tuple[tuple[Row, ...], str]:
 
 
 def _json_object(arguments: str) -> dict:
+    # Reject duplicate keys and nonfinite constants rather than letting the JSON
+    # parser choose a meaning that differs from the proposal's apparent contents.
     def unique_pairs(pairs):
         result = {}
         for key, value in pairs:
@@ -199,6 +231,13 @@ def _display(sen: int) -> str:
 
 
 class ToolSet:
+    """Own one run's snapshot, validated summary, and optional staged chart.
+
+    Summaries and charts can each be created once. A failed call clears usable
+    results and permanently rejects further execution. Returned dictionaries are
+    copies so a backend cannot mutate the state that later validation relies on.
+    """
+
     def __init__(self, case_root: Path, run_dir: Path, run_id: str, output_format: str):
         self._summary: dict | None = None
         self._chart: dict | None = None
@@ -233,6 +272,12 @@ class ToolSet:
         return deepcopy(self._chart)
 
     def execute(self, name: str, arguments: str) -> dict:
+        """Validate a proposal, execute one allowed operation, and retain its result.
+
+        Neither a valid schema nor a model-provided handle authorizes an operation
+        unless the current run state and selected output format also permit it.
+        """
+
         self.last_arguments = {}
         try:
             if self._failed:
@@ -257,6 +302,7 @@ class ToolSet:
                 if self._summary is None or self._chart is not None or validated["summary_id"] != self._summary["summary_id"]:
                     raise Failure("invalid_state", status="rejected", phase="tool")
                 result = self._render()
+            # A tool's return value remains untrusted until semantic checks pass.
             result = self._validate_result(name, result, validated)
             if name == "sum_by_channel":
                 self._summary = deepcopy(result)
@@ -264,6 +310,7 @@ class ToolSet:
                 self._chart = deepcopy(result)
             return deepcopy(result)
         except Failure:
+            # Prevent an earlier summary from surviving a later failed operation.
             self._failed = True
             self._summary = self._chart = None
             raise
@@ -317,6 +364,7 @@ class ToolSet:
             cache = self.run_dir / ".plot-cache"
             cache.mkdir(mode=0o700, exist_ok=False)
             _check_location(cache, self.case_root)
+            # Matplotlib configuration and caches belong to this run's directory.
             os.environ["MPLCONFIGDIR"] = str(cache)
             import matplotlib
             matplotlib.use("Agg", force=True)
@@ -333,6 +381,7 @@ class ToolSet:
             axis.set_title(f"Total {'revenue' if summary['metric'] == 'revenue_sen' else 'spend'} by channel")
             axis.set_ylabel("RM")
             axis.set_ylim(bottom=0, top=max(1, max(row["total_sen"] for row in totals) / 100 * 1.15))
+            # A rendered chart stays pending until the controller accepts completion.
             path = self.run_dir / "chart.pending.png"
             descriptor = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL | getattr(os, "O_NOFOLLOW", 0), 0o600)
             with os.fdopen(descriptor, "wb") as target:
@@ -347,6 +396,12 @@ class ToolSet:
             raise Failure("artifact_error", phase="tool") from None
 
     def _validate_result(self, name: str, result: dict, arguments: dict) -> dict:
+        """Check result shape and recompute its meaning from host-owned state.
+
+        Schema validation alone cannot establish correct totals, dataset identity,
+        or ownership of the chart's summary and path.
+        """
+
         try:
             model = {"inspect_dataset": Inspection, "sum_by_channel": Summary, "render_bar_chart": Chart}[name]
             validated = model.model_validate(result).model_dump()
@@ -366,6 +421,8 @@ class ToolSet:
             raise Failure("invalid_tool_result", phase="tool") from None
 
     def finish(self) -> tuple[dict, dict | None]:
+        """Revalidate all required results before the worker can request success."""
+
         if self._failed or self._summary is None or (self.output_format == "bar" and self._chart is None):
             raise Failure("incomplete_result", phase="completion")
         summary = self._validate_result("sum_by_channel", self._summary, {"metric": self._summary["metric"]})

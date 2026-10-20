@@ -3,11 +3,11 @@ name: Tool-Using case
 on:
   push:
     paths:
-      - agents/tool-using/**
+      - agents/07-tool-using/**
       - .github/workflows/tool-using.yml
   pull_request:
     paths:
-      - agents/tool-using/**
+      - agents/07-tool-using/**
       - .github/workflows/tool-using.yml
   workflow_dispatch:
 
@@ -20,7 +20,7 @@ jobs:
     timeout-minutes: 10
     defaults:
       run:
-        working-directory: agents/tool-using
+        working-directory: agents/07-tool-using
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -29,7 +29,7 @@ jobs:
         with:
           version: "0.12.23"
           enable-cache: true
-          cache-dependency-glob: agents/tool-using/uv.lock
+          cache-dependency-glob: agents/07-tool-using/uv.lock
       - name: Install locked case dependencies
         run: uv sync --locked
       - name: Check fixture and mocked-provider behavior

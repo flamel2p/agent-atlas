@@ -1,3 +1,12 @@
+"""Decision sources with a shared next(result) and close() interface.
+
+Replay emits predetermined proposals. OpenAIBackend retains one run's provider
+history and correlates validated tool results with their original call IDs.
+Neither backend executes tools or supplies authoritative report content.
+The live adapter validates the whole response before returning a Decision and
+keeps provider prose and reasoning out of public reports and traces.
+"""
+
 import importlib
 import json
 import logging
@@ -24,6 +33,7 @@ tool calls. Only validated tool results determine the final report.
 
 
 def _silence_transport_logging() -> None:
+    # SDK transport diagnostics can contain credentials or full provider payloads.
     namespaces = ("openai", "httpx", "httpx2", "httpcore", "httpcore2")
     names = set(namespaces) | {
         name
@@ -76,6 +86,12 @@ def _output_data(item: Any) -> dict[str, Any]:
 
 
 class ReplayBackend:
+    """A deterministic script that exercises the same dispatcher as live mode.
+
+    The step counter belongs to this backend instance and lasts for one run.
+    Replay demonstrates tool execution without making a model-selection claim.
+    """
+
     def __init__(self, config: RunConfig):
         if config.example not in {"revenue-by-channel-bar", "spend-by-channel-table", "invalid-tool-call"}:
             raise Failure("invalid_input", status="rejected", phase="configuration")
@@ -103,6 +119,13 @@ class ReplayBackend:
 
 
 class OpenAIBackend:
+    """Translate a serial Responses conversation into proposals for the host.
+
+    History and seen call IDs remain in memory for this run. At most one result
+    is pending. A terminal validation failure prevents reuse of the conversation.
+    The optional client is a test seam, not a provider-selection option.
+    """
+
     def __init__(self, config: RunConfig, api_key: str, client: Any = None):
         if not isinstance(api_key, str) or not api_key.strip():
             raise Failure("missing_credentials", status="rejected", phase="configuration")
@@ -113,6 +136,8 @@ class OpenAIBackend:
             _silence_transport_logging()
             self._timeout_types += (sdk.APITimeoutError,)
             if client is None:
+                # Fixed transport and zero retries preserve the selected authority
+                # and request budget; the controller enforces hard deadlines.
                 client = sdk.OpenAI(
                     api_key=api_key,
                     base_url="https://api.openai.com/v1",
@@ -134,6 +159,12 @@ class OpenAIBackend:
         self.last_metadata: dict[str, Any] | None = None
 
     def next(self, result: dict[str, Any] | None) -> Decision:
+        """Consume the prior validated result and return a fully parsed response.
+
+        The first call takes None. Subsequent calls must supply a result exactly
+        when the previous response proposed a tool.
+        """
+
         self.last_metadata = None
         if self._closed or self._failed:
             raise Failure("invalid_state", status="rejected", phase="backend")
@@ -151,6 +182,7 @@ class OpenAIBackend:
                 encoded = json.dumps(result, allow_nan=False, separators=(",", ":"))
             except (TypeError, ValueError):
                 raise Failure("invalid_tool_result", phase="backend") from None
+            # Preserve the provider's call ID rather than inventing a new link.
             self._history.append({"type": "function_call_output", "call_id": self._pending_call_id, "output": encoded})
             self._pending_call_id = None
         elif result is not None:
@@ -180,6 +212,7 @@ class OpenAIBackend:
         self.last_metadata = _metadata(response)
         request_id = _request_id(_field(response, "_request_id"))
         status = _field(response, "status")
+        # A plausible call inside a failed or incomplete response is not executable.
         if status != "completed" or _field(response, "error") is not None or _field(response, "incomplete_details") is not None:
             code = "incomplete_result" if status == "incomplete" or _field(response, "incomplete_details") is not None else "provider_error"
             raise Failure(code, phase="provider", request_id=request_id)
@@ -233,6 +266,8 @@ class OpenAIBackend:
                 raise Failure("provider_error", phase="provider", request_id=request_id)
         if len(calls) > 1:
             raise Failure("invalid_tool_call", status="rejected", phase="provider", request_id=request_id)
+        # Commit history only after every item passes validation. Required response
+        # items stay available to the provider without becoming report data.
         self._history.extend(items)
         if calls:
             self._pending_call_id = calls[0].call_id

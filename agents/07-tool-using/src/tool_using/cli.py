@@ -1,3 +1,10 @@
+"""Command-line entry point for one bounded campaign-report run.
+
+Parsing resolves replay examples or a live task into RunConfig before execution.
+Only live mode reads credentials. The controller owns execution and artifacts;
+this module emits its report as JSON and maps terminal status to a process exit.
+"""
+
 import argparse
 import json
 import os
@@ -19,12 +26,15 @@ class Parser(argparse.ArgumentParser):
 
 
 def parse_config(argv: list[str] | None = None) -> RunConfig:
+    """Resolve mutually exclusive replay/live inputs or raise a public Failure."""
+
     parser = Parser(description="Summarize synthetic campaign data through bounded tool calls.")
     parser.add_argument("--mode", choices=("replay", "live"), default="replay")
     parser.add_argument("--example", choices=tuple(EXAMPLES))
     parser.add_argument("--task")
     parser.add_argument("--format", choices=("table", "bar"))
     args = parser.parse_args(argv)
+    # Reject mode-incompatible flags so supplied intent is never silently ignored.
     if args.mode == "replay":
         if args.task is not None or args.format is not None:
             parser.error("Live-only option in replay mode")
@@ -40,6 +50,8 @@ def parse_config(argv: list[str] | None = None) -> RunConfig:
 
 
 def main(argv: list[str] | None = None) -> int:
+    """Run one invocation and preserve structured errors before run creation."""
+
     config = RunConfig()
     try:
         config = parse_config(argv)

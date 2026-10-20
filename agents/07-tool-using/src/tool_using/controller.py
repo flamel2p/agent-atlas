@@ -1,3 +1,12 @@
+"""Supervise one trusted worker and publish a host-generated terminal report.
+
+The worker owns the dataset, backend conversation, and dispatcher state. It sends
+bounded result events over a pipe and stages any chart. The surviving controller
+owns the run clock, trace, cancellation, and publication after worker exit.
+A separate process allows deadlines to stop blocked provider or plotting code.
+It is an implementation detail, not a model-callable process-execution tool.
+"""
+
 from contextlib import suppress
 import json
 import multiprocessing
@@ -17,6 +26,8 @@ from .contracts import (
 
 
 def case_directory() -> Path:
+    """Locate the case from its source layout, including an editable install."""
+
     return Path(__file__).absolute().parents[2]
 
 
@@ -46,6 +57,13 @@ def _worker(
     config: RunConfig, root: Path, run_dir: Path, run_id: str,
     api_key: str | None, connection: Connection, backend_factory: Callable | None,
 ) -> None:
+    """Execute a serial proposal/result loop and send one terminal outcome.
+
+    Only successful validated tool results become the next backend input.
+    Failures leave the loop permanently; there is no correction or retry path.
+    """
+
+    # The controller handles interruption and decides whether anything is published.
     signal.signal(signal.SIGINT, signal.SIG_IGN)
     backend = None
     terminal = None
@@ -81,11 +99,13 @@ def _worker(
             if len(decision.calls) > 1:
                 raise Failure("invalid_tool_call", status="rejected", phase="dispatch")
             if not decision.calls:
+                # Backend silence requests completion but cannot certify it.
                 summary, chart = tools.finish()
                 terminal = {"kind": "success", "summary": summary, "chart": chart}
                 break
             if attempts >= MAX_TOOL_ATTEMPTS:
                 raise Failure("limit_reached", status="limit_reached", phase="tools")
+            # Count admitted attempts before execution, including an attempt that fails.
             attempts += 1
             call = decision.calls[0]
             previous = tools.execute(call.name, call.arguments)
@@ -150,6 +170,11 @@ def _merge_metadata(report: dict, metadata: dict) -> None:
 
 
 def _publish(run_dir: Path, root: Path, report: dict) -> None:
+    """Promote a staged chart only for success, then replace the report file.
+
+    The caller handles rollback if this multi-file publication is interrupted.
+    """
+
     _check_directory(root, root)
     _check_directory(run_dir.parent, root)
     _check_directory(run_dir, root)
@@ -167,6 +192,7 @@ def _publish(run_dir: Path, root: Path, report: dict) -> None:
             header = handle.read(24)
         if len(header) != 24 or header[:8] != b"\x89PNG\r\n\x1a\n" or header[12:16] != b"IHDR" or struct.unpack(">II", header[16:24]) != (960, 540):
             raise Failure("artifact_error", phase="publication")
+        # Linking fails if a final chart already exists, avoiding an overwrite.
         os.link(pending, final, follow_symlinks=False)
         pending.unlink()
     elif pending.exists() or pending.is_symlink():
@@ -192,7 +218,13 @@ def run(
     backend_factory: Callable | None = None,
     request_seconds: float = REQUEST_SECONDS, run_seconds: float = RUN_SECONDS,
 ) -> dict:
-    """Supervise a trusted worker; injectable paths/backends/limits are test seams, not CLI options."""
+    """Return the host report after bounded execution and artifact publication.
+
+    Injectable paths, backends, and limits are test seams, not CLI options.
+    A completed report certifies validated results and the requested format,
+    without proving that the selected metric matches natural-language intent.
+    """
+
     if config.mode == "live" and (not isinstance(api_key, str) or not api_key.strip()):
         return error_report(config, Failure("missing_credentials", status="rejected", phase="configuration"))
     root = root or case_directory()
@@ -234,6 +266,7 @@ def run(
                     break
                 kind = message["kind"]
                 if kind == "request_started":
+                    # Worker timestamps keep queue delay inside the request budget.
                     request_deadline = min(deadline, message["at"] + request_seconds)
                 elif kind == "request_finished":
                     if request_deadline is None or message["at"] > request_deadline:
@@ -253,6 +286,7 @@ def run(
             if not worker.is_alive() and not reader.poll():
                 break
         worker.join(timeout=max(0, min(1, deadline - time.monotonic())))
+        # A success message is insufficient if cleanup hangs or the worker crashes.
         if worker.is_alive() or worker.exitcode != 0 or outcome is None:
             raise Failure("invalid_tool_result", phase="worker")
         if time.monotonic() >= deadline:
@@ -280,12 +314,14 @@ def run(
         writer.close()
 
     if report["status"] != "completed":
+        # Diagnostic events may retain intermediate results; the final report cannot.
         report.update(summary=None, chart=None)
     try:
         _publish(run_dir, root, report)
     except (KeyboardInterrupt, OSError, ValueError, Failure) as error:
         failure = Failure("cancelled", status="cancelled", phase="publication") if isinstance(error, KeyboardInterrupt) else Failure("artifact_error", phase="publication")
         report.update(status=failure.status, summary=None, chart=None, error=failure.as_dict())
+        # Remove any chart already promoted before attempting the failure report.
         with suppress(OSError, ValueError, Failure):
             _rollback_publication(run_dir, root)
             _publish(run_dir, root, report)

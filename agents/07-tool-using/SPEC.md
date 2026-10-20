@@ -1,6 +1,6 @@
 # Tool-Using Agent specification
 
-Slug: tool-using
+Slug: 07-tool-using
 Status: demo-ready
 Runtime: Python 3.14 (uv CLI)
 
@@ -9,6 +9,19 @@ Runtime: Python 3.14 (uv CLI)
 Build a developer-facing CLI that turns a request about synthetic campaign spend or revenue into validated local tool calls, a totals table, and optionally one bar chart. The learning objective is the boundary between model-proposed actions and executable authority.
 
 Contract selected, implemented, and validated on 16 October 2026 at the user's request. Fixture/replay, mocked-provider checks, and both selected live-model examples passed. The [README](README.md#verification) records actual commands and evidence boundaries; two examples do not establish general language understanding or production reliability.
+
+## Agent 07 completion plan
+
+The user selected completion of the existing case on 20 October 2026. Agent 07 is the Tool-Using pattern in the source inventory; this case already implements its selected behavior.
+
+1. Rename the owned directory from `agents/tool-using/` to `agents/07-tool-using/` and update active catalogue, documentation, and CI paths. Keep the `tool-using` command and `tool_using` Python package stable.
+2. Preserve the tool allowlist, typed proposals, run state, prompts, generated schemas, output contract, and execution limits.
+3. Add reviewer explanations and a linked source reading guide under the current repository standard. Keep local credentials and artifacts ignored when the case is copied independently.
+4. Verify executable AST and schema equivalence, run the existing suite and replay commands from the renamed directory, and check a standalone case checkout. Record fresh local evidence separately from the 16 October live runs.
+
+The existing source-checkout installation through `uv sync --locked` remains the supported run path. Standalone wheel distribution is outside this contract because the fixture and artifact root are resolved relative to the case source tree.
+
+## Included behavior
 
 Included: one bundled dataset, sum by channel, inspectable calls, deterministic replay, and opt-in live tool selection. Excluded: arbitrary file uploads, other aggregations/groupings, filtering, business recommendations, web UI, database, persistent memory, multiple providers, and external business actions.
 

@@ -1,6 +1,6 @@
 # Tool-Using Agent
 
-Slug: tool-using
+Slug: 07-tool-using
 Status: demo-ready
 Runtime: Python 3.14 (uv CLI)
 
@@ -9,6 +9,8 @@ Runtime: Python 3.14 (uv CLI)
 A CLI that summarizes synthetic campaign spend or revenue by channel and optionally creates a bar chart. The selected [behavior contract](SPEC.md) demonstrates how model-proposed calls pass through a validated execution boundary.
 
 Implemented and validated on 16 October 2026. Replay, mocked-provider checks, and both selected live-provider examples passed.
+
+Completed the [Agent 07 plan](SPEC.md#agent-07-completion-plan) on 20 October 2026 by aligning the directory name and adding reviewer explanations. The `tool-using` command and existing behavior remain unchanged. Fresh local verification is recorded below; the live-provider evidence remains dated 16 October.
 
 | Area | Selected contract |
 | --- | --- |
@@ -28,12 +30,25 @@ Replay and live use the same dispatcher. A failed tool stops the run. The model 
 
 The supplied [source brief](../../agent-library-analysis/agents/07-tool-using.md) records Chapter 7, printed pp.174-186 / physical PDF pp.205-217, and distinguishes the conceptual pattern from the rule-based book sample.
 
+## Source reading guide
+
+Read the [behavior contract](SPEC.md) alongside these modules:
+
+| Source | Reviewer focus |
+| --- | --- |
+| [cli.py](src/tool_using/cli.py) | Entry point, mutually exclusive mode flags, credential loading, structured reports, and exit codes. |
+| [contracts.py](src/tool_using/contracts.py) | Run configuration, untrusted tool proposals, backend decisions, execution limits, and sanitized terminal failures. |
+| [backends.py](src/tool_using/backends.py) | Deterministic replay and live Responses history, original call-ID correlation, whole-response validation, and the boundary between proposals and execution. |
+| [tools.py](src/tool_using/tools.py) | Immutable fixture snapshot, strict argument/result schemas, run-local handles, terminal dispatcher state, exact totals, and staged chart rendering. |
+| [controller.py](src/tool_using/controller.py) | Trusted worker lifecycle, hard request/run deadlines, trace ownership, completion checks, and artifact publication/rollback. |
+| [tests/](tests/) | Observable acceptance checks for permitted results, malformed proposals, state isolation, provider responses, deadlines, cancellation, and publication failures. |
+
 ## Setup and run
 
 Prerequisite: [uv](https://docs.astral.sh/uv/getting-started/installation/). Run from this case directory:
 
 ```sh
-cd agents/tool-using
+cd agents/07-tool-using
 uv sync --locked
 uv run --locked tool-using --mode replay --example revenue-by-channel-bar
 uv run --locked tool-using --mode replay --example spend-by-channel-table
@@ -53,6 +68,8 @@ Each run prints its report as JSON and writes `artifacts/<run-id>/report.json` a
 
 Python is pinned to 3.14.8 in [.python-version](.python-version). Direct dependencies are OpenAI 3.31.0, Pydantic 2.14.1, and Matplotlib 3.11.2; development uses pytest 9.1.1. [pyproject.toml](pyproject.toml) and [uv.lock](uv.lock) own the exact environment. No sibling case or root runtime installation is required.
 
+The supported run path is this source checkout with uv's editable project install. The application locates the case relative to `src/tool_using/`, and the wheel configuration includes only that package. A standalone wheel installation does not include the required fixture or preserve the case layout.
+
 ### Live mode
 
 Copy `.env.example` to `.env` if you do not already have one, then set `OPENAI_API_KEY` locally. Do not paste the key into chat or commit it. The application reads the process environment; `uv --env-file` loads the case-local file explicitly:
@@ -65,6 +82,29 @@ uv run --locked --env-file .env tool-using --mode live --task "Compare total spe
 An exported `OPENAI_API_KEY` also works without `--env-file`. Live calls use the selected model only, with no retries or fallback. Reports include provider response count, reported model, and aggregate token usage when returned; traces retain sanitized request IDs. Free-form model text, raw errors, credentials, and task text are not logged. Unsupported task meaning relies on the model declining it; `completed` does not establish task alignment.
 
 ## Verification
+
+### Agent 07 completion checks
+
+Verified on: 2026-10-20
+Verification command: UV_CACHE_DIR=/tmp/agent-atlas-uv-cache uv run --locked --offline pytest -q
+Verification mode: fixture
+Verification result: passed
+Verified scope: all 133 existing fixture and mocked-provider tests passed from `agents/07-tool-using/`, including exact totals, strict calls/results, state isolation, deadlines, cancellation, and publication rollback. No live model calls were made.
+
+Environment: macOS, CPython 3.14.8, uv 0.12.23. The renamed case received a fresh environment through `UV_CACHE_DIR=/tmp/agent-atlas-uv-cache uv sync --locked`. The first offline installation attempt lacked cached dependencies, and the restricted-network attempt failed DNS resolution. Installation then passed with network access and the unchanged lockfile.
+
+| Check | Actual result on 20 October |
+| --- | --- |
+| Executable preservation | All seven Python modules have identical executable ASTs after removing docstrings. All eight Pydantic schemas, both tool-schema sets, and provider instructions match the pre-rename version. Tests, fixture, manifest, and lockfile are byte-for-byte unchanged. |
+| Default CLI | `uv run --locked --offline tool-using` exited 0 with revenue totals of 30000, 75000, and 40000 sen. The 960×540 PNG was inspected visually; its summary reference and report file matched the emitted result. |
+| Table CLI | `uv run --locked --offline tool-using --mode replay --example spend-by-channel-table` exited 0 with totals of 5000, 25000, and 20000 sen and no chart. |
+| Rejection CLI | `uv run --locked --offline tool-using --mode replay --example invalid-tool-call` exited 2 with `invalid_tool_call`, null summary/chart, and no published chart. |
+| Independent case checkout | Copied only case source, configuration, fixtures, and tests to a temporary directory. Excluded credentials, environments, caches, and artifacts. With `OPENAI_API_KEY` and `PYTHONPATH` unset, `uv sync --locked --offline` and all three named replay commands passed with their expected exits. Imports resolved inside the copy. The offline installation used the populated dependency cache. |
+| Independent review | No actionable findings. The reviewer separately compared executable ASTs, generated schemas, provider instructions, unchanged data/tests/dependencies, active paths, and explanation accuracy. The reviewer relied on the recorded parent runs for runtime evidence. |
+
+The directory move retained existing ignored files and local artifacts. The case-local `.gitignore` also excludes credentials and generated files when the directory is copied into its own repository; those rules were checked in the isolated copy. Historical run IDs below still refer to their preserved local artifacts.
+
+The repository structure check, active Markdown links and anchors, and whitespace checks passed. Live-provider calls were not repeated. Hosted CI, deployment, and production reliability remain unverified.
 
 ### Live-provider acceptance
 

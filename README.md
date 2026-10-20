@@ -12,7 +12,7 @@ Independently runnable learning demos with explicit architecture, tool boundarie
 | [Knowledge Retrieval Agent](agents/04-knowledge-retrieval/README.md) | Filtered lexical retrieval and exact evidence citations | demo-ready | Python 3.14 (uv CLI) | 181 fixture/CLI/mocked-provider checks, 12 CLI scenarios, case-only install/wheel, and independent review passed; live model unverified |
 | [Document Intelligence Agent](agents/05-document-intelligence/README.md) | Invoice field extraction with spatial evidence and explicit review | demo-ready | Python 3.14 (uv CLI, POSIX) | 110 fixture/CLI/mocked OCR checks, case-only install/wheel, and independent review passed; real OCR unverified |
 | [Scientific Research Agent](agents/06-scientific-research/README.md) | Bounded lexical literature mapping with exact abstract evidence | demo-ready | Python 3.14 (uv CLI, POSIX) | 36 fixture/CLI checks, 10 CLI scenarios, case-only install/wheel, and independent review passed; synthetic corpus only |
-| [Tool-Using Agent](agents/tool-using/README.md) | Tool selection and guarded execution | demo-ready | Python 3.14 (uv CLI) | Replay, mocked-provider checks, and two live gpt-6-luna examples passed |
+| [Tool-Using Agent](agents/07-tool-using/README.md) | Tool selection and guarded execution | demo-ready | Python 3.14 (uv CLI) | 133 fixture/mocked-provider checks, 3 replay paths, isolated checkout, and independent review passed on 20 Oct; two live examples passed on 16 Oct |
 | [Typed Decision Agent (#31)](agents/31-typed-decision/README.md) | Jev-inspired typed predictions with explicit uncertainty | planned | undecided | Source research and scope only; no runnable implementation or model validation |
 
 ## Use a demo
@@ -38,7 +38,9 @@ The inventory preserves the Security-Hardened/Compliance-Driven naming differenc
 
 ## Status and next step
 
-Initialized on 16 October 2026 with governance and a runnable Tool-Using case. Its replay, mocked-provider checks, and two selected live requests passed; see [Tool-Using verification](agents/tool-using/README.md#verification).
+Initialized on 16 October 2026 with governance and a runnable Tool-Using case. Its replay, mocked-provider checks, and two selected live requests passed; see [Tool-Using verification](agents/07-tool-using/README.md#verification).
+
+Completed Agent 07 alignment on 20 October 2026. The existing Tool-Using case now lives at `agents/07-tool-using/`, with its original command, behavior, and live evidence preserved. Added reviewer explanations, a source reading guide, and case-local ignore rules. Its 133 fixture/mocked-provider tests, three replay paths, and isolated checkout passed again. See the [completion plan](agents/07-tool-using/SPEC.md#agent-07-completion-plan) and [current checks](agents/07-tool-using/README.md#agent-07-completion-checks).
 
 Added Autonomous Decision-Making on 18 October 2026: synthetic support triage with deterministic policy, one read-only status observation, and autonomous/guided/handoff outcomes. Its 11 replay examples, 123 fixture/mocked-provider checks, independent review, and case-only installation passed. Optional OpenAI mode is implemented; live compatibility remains unverified. See [Autonomous Decision-Making verification](agents/01-autonomous-decision-making/README.md#verification) and [setup validation](docs/CODEX_WORKFLOW.md#validation-status).
 
