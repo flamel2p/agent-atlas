@@ -1,0 +1,25 @@
+[build-system]
+requires = ["hatchling>=1.27,<2"]
+build-backend = "hatchling.build"
+
+[project]
+name = "agent-atlas-scientific-research"
+version = "0.1.0"
+description = "Deterministic synthetic literature mapping demo"
+requires-python = ">=3.14,<3.15"
+dependencies = []
+
+[project.scripts]
+scientific-research = "scientific_research.cli:main"
+
+[dependency-groups]
+dev = ["pytest>=8,<10"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/scientific_research"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"src/scientific_research/data/corpus.json" = "scientific_research/data/corpus.json"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

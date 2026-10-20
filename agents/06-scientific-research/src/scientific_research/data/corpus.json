@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "corpus_id": "retrieval-evaluation-synthetic-v1",
+  "papers": [
+    {
+      "paper_id": "S01",
+      "title": "Retrieval evaluation with answer relevance judgments",
+      "abstract": "Answer relevance judgments compare retrieved passages with explicit question needs. Graded labels support ranking metrics across a held-out query set.",
+      "authors": ["Mira Tan", "Amir Yusuf"],
+      "year": 2024,
+      "source": "Synthetic Methods Archive",
+      "source_id": "SMA-001",
+      "synthetic": true
+    },
+    {
+      "paper_id": "S02",
+      "title": "Retrieval evaluation under incomplete relevance labels",
+      "abstract": "Incomplete relevance labels alter ranking metrics when unjudged passages are treated as irrelevant. Pooling strategies estimate label coverage across query sets.",
+      "authors": ["Mira Tan"],
+      "year": 2025,
+      "source": "Synthetic Methods Archive",
+      "source_id": "SMA-002",
+      "synthetic": true
+    },
+    {
+      "paper_id": "S03",
+      "title": "Retrieval evaluation with latency budgets",
+      "abstract": "Latency budgets constrain candidate generation in interactive search. Throughput and tail latency measurements expose tradeoffs at different query loads.",
+      "authors": ["Lena Shah"],
+      "year": 2024,
+      "source": "Synthetic Systems Notes",
+      "source_id": "SSN-003",
+      "synthetic": true
+    },
+    {
+      "paper_id": "S04",
+      "title": "Retrieval evaluation for cached search",
+      "abstract": "Cached search reduces tail latency for repeated questions. Throughput measurements under query loads distinguish cache hits from misses.",
+      "authors": ["Lena Shah", "Jin Ong"],
+      "year": 2025,
+      "source": "Synthetic Systems Notes",
+      "source_id": "SSN-004",
+      "synthetic": true
+    },
+    {
+      "paper_id": "S05",
+      "title": "Retrieval evaluation across multilingual queries",
+      "abstract": "Multilingual queries require language-specific relevance labels. Translation artifacts can distort ranking metrics across languages.",
+      "authors": ["Nadia Lim"],
+      "year": 2023,
+      "source": "Synthetic Language Review",
+      "source_id": "SLR-005",
+      "synthetic": true
+    },
+    {
+      "paper_id": "S06",
+      "title": "Retrieval evaluation for translated questions",
+      "abstract": "Translated questions introduce language-specific ambiguity. Multilingual relevance labels reveal ranking differences across languages.",
+      "authors": ["Nadia Lim", "Siti Rahman"],
+      "year": 2024,
+      "source": "Synthetic Language Review",
+      "source_id": "SLR-006",
+      "synthetic": true
+    }
+  ]
+}
