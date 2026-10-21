@@ -13,7 +13,9 @@ Independently runnable learning demos with explicit architecture, tool boundarie
 | [Document Intelligence Agent](agents/05-document-intelligence/README.md) | Invoice field extraction with spatial evidence and explicit review | demo-ready | Python 3.14 (uv CLI, POSIX) | 110 fixture/CLI/mocked OCR checks, case-only install/wheel, and independent review passed; real OCR unverified |
 | [Scientific Research Agent](agents/06-scientific-research/README.md) | Bounded lexical literature mapping with exact abstract evidence | demo-ready | Python 3.14 (uv CLI, POSIX) | 36 fixture/CLI checks, 10 CLI scenarios, case-only install/wheel, and independent review passed; synthetic corpus only |
 | [Tool-Using Agent](agents/07-tool-using/README.md) | Tool selection and guarded execution | demo-ready | Python 3.14 (uv CLI) | 133 fixture/mocked-provider checks, 3 replay paths, isolated checkout, and independent review passed on 20 Oct; two live examples passed on 16 Oct |
+| [Chain-of-Agents Orchestrator](agents/08-chain-of-agents-orchestrator/README.md) | Typed specialist handoffs, manager-owned context, and explicit evidence conflict review | demo-ready | Python 3.14 (uv CLI) | 104 fixture/CLI/fault checks, 8 installed-wheel scenarios, case-only install, and independent review passed; no LLM or runtime network |
 | [Typed Decision Agent (#31)](agents/31-typed-decision/README.md) | Jev-inspired typed predictions with explicit uncertainty | planned | undecided | Source research and scope only; no runnable implementation or model validation |
+| [MCP Server Builder Agent (#32)](agents/32-mcp-server-builder/README.md) | OpenAPI-guided tool design and standalone MCP server generation | planned | Python (uv CLI; planned) | Contract and implementation plan only; no builder or generated-server validation |
 
 ## Use a demo
 
@@ -54,7 +56,11 @@ Added [Document Intelligence Agent](agents/05-document-intelligence/README.md) o
 
 Added [Scientific Research Agent](agents/06-scientific-research/README.md) on 20 October 2026: deterministic search and thematic grouping over original synthetic paper metadata, with exact abstract offsets, hashes, duplicate accounting, and explicit interpretation limits. Its 36 fixture/CLI tests, 10 CLI scenarios, case-only installation, installed-wheel execution, and independent review passed. It uses no LLM or runtime network and does not assess scientific consensus, study quality, or research gaps. See [Scientific Research verification](agents/06-scientific-research/README.md#verification) and [design plan](agents/06-scientific-research/DESIGN.md).
 
+Added [Chain-of-Agents Orchestrator](agents/08-chain-of-agents-orchestrator/README.md) on 21 October 2026. Three deterministic release-evidence roles use typed handoffs, immutable shared context, exact record provenance, and explicit conflict/missing-evidence review. All 104 fixture/CLI/fault checks, case-only installation, eight installed-wheel scenarios, and independent review passed. The manager owns deadlines and cancellation cleanup. This simulation uses no LLM, persistent memory, or runtime network. See the [implementation plan](agents/08-chain-of-agents-orchestrator/PLAN.md) and [verification evidence](agents/08-chain-of-agents-orchestrator/README.md#verification).
+
 Registered [#31 Typed Decision Agent](agents/31-typed-decision/README.md) on 18 October 2026 as a planned, independently designed case inspired by TypeSafe AI's Jev. Its next step is selecting a probability-producing backend and evaluation data before implementation. The retained book inventory and supplemental pattern remain unchanged; #31 is a project extension.
+
+Planned [#32 MCP Server Builder Agent](agents/32-mcp-server-builder/README.md) on 21 October 2026. It will use an OpenAPI contract and desired tasks to propose a small tool set, generate a standalone stdio server, and check the generated artifact against a synthetic service. The [implementation plan](agents/32-mcp-server-builder/PLAN.md) starts with a fixture and SDK/isolation feasibility check. No runtime, live-model, real-service, or deployment evidence exists yet.
 
 ## License
 
