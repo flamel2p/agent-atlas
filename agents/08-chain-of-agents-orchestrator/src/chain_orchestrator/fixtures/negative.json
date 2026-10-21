@@ -1,0 +1,66 @@
+{
+  "target_release": "v1.0",
+  "environment": "staging",
+  "records": [
+    {
+      "role": "release",
+      "source_id": "release-source",
+      "record_id": "export",
+      "release": "v1.0",
+      "feature_id": "export",
+      "environment": "staging",
+      "works": false,
+      "text": "Synthetic direct assertion about export."
+    },
+    {
+      "role": "release",
+      "source_id": "release-source",
+      "record_id": "search",
+      "release": "v1.0",
+      "feature_id": "search",
+      "environment": "staging",
+      "works": false,
+      "text": "Synthetic direct assertion about search."
+    },
+    {
+      "role": "tests",
+      "source_id": "tests-source",
+      "record_id": "export",
+      "release": "v1.0",
+      "feature_id": "export",
+      "environment": "staging",
+      "works": false,
+      "text": "Synthetic direct assertion about export."
+    },
+    {
+      "role": "tests",
+      "source_id": "tests-source",
+      "record_id": "search",
+      "release": "v1.0",
+      "feature_id": "search",
+      "environment": "staging",
+      "works": false,
+      "text": "Synthetic direct assertion about search."
+    },
+    {
+      "role": "feedback",
+      "source_id": "feedback-source",
+      "record_id": "export",
+      "release": "v1.0",
+      "feature_id": "export",
+      "environment": "staging",
+      "works": false,
+      "text": "Synthetic direct assertion about export."
+    },
+    {
+      "role": "feedback",
+      "source_id": "feedback-source",
+      "record_id": "search",
+      "release": "v1.0",
+      "feature_id": "search",
+      "environment": "staging",
+      "works": false,
+      "text": "Synthetic direct assertion about search."
+    }
+  ]
+}
