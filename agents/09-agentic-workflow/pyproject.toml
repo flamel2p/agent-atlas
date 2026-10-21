@@ -1,0 +1,16 @@
+[build-system]
+requires = ["hatchling==1.32.4"]
+build-backend = "hatchling.build"
+
+[project]
+name = "agentic-workflow-demo"
+version = "0.1.0"
+description = "Durable synthetic equipment request workflow"
+requires-python = ">=3.14,<3.15"
+dependencies = []
+
+[project.scripts]
+agentic-workflow = "agentic_workflow.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/agentic_workflow"]
