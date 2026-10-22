@@ -1,0 +1,176 @@
+{
+  "baseline": {
+    "config": {
+      "recency_topic": null
+    }
+  },
+  "corpus": [
+    {
+      "answer": "Synthetic previous policy: refund requests close after 14 days.",
+      "document_id": "a-policy-old",
+      "revision": 2,
+      "tokens": [
+        "refund",
+        "policy",
+        "window",
+        "request",
+        "deadline",
+        "status"
+      ],
+      "topic": "refunds"
+    },
+    {
+      "answer": "Synthetic current policy: refund requests close after 30 days.",
+      "document_id": "z-policy-current",
+      "revision": 3,
+      "tokens": [
+        "refund",
+        "policy",
+        "window",
+        "request",
+        "deadline",
+        "status"
+      ],
+      "topic": "refunds"
+    },
+    {
+      "answer": "Synthetic retired policy: refund requests close after 7 days.",
+      "document_id": "z-ancient",
+      "revision": 1,
+      "tokens": [
+        "refund",
+        "policy",
+        "window",
+        "request",
+        "deadline",
+        "status"
+      ],
+      "topic": "refunds"
+    },
+    {
+      "answer": "Synthetic chargebacks require specialist review.",
+      "document_id": "z-specialist",
+      "revision": 4,
+      "tokens": [
+        "refund",
+        "specialist",
+        "chargeback"
+      ],
+      "topic": "refunds"
+    },
+    {
+      "answer": "Synthetic entry with no relevant token overlap.",
+      "document_id": "z-unused",
+      "revision": 10,
+      "tokens": [
+        "unused"
+      ],
+      "topic": "refunds"
+    },
+    {
+      "answer": "Reset the synthetic password in account settings.",
+      "document_id": "a-access",
+      "revision": 1,
+      "tokens": [
+        "password",
+        "reset",
+        "account",
+        "login"
+      ],
+      "topic": "access"
+    },
+    {
+      "answer": "Synthetic newer access instructions outside the selected topic.",
+      "document_id": "z-access-new",
+      "revision": 2,
+      "tokens": [
+        "password",
+        "reset",
+        "account",
+        "login"
+      ],
+      "topic": "access"
+    },
+    {
+      "answer": "Download the synthetic invoice PDF from billing.",
+      "document_id": "a-billing",
+      "revision": 1,
+      "tokens": [
+        "invoice",
+        "receipt",
+        "download",
+        "pdf"
+      ],
+      "topic": "billing"
+    }
+  ],
+  "development_controls": [
+    {
+      "expected_document_id": "a-access",
+      "group": "development",
+      "query": {
+        "query_id": "dev-access",
+        "tokens": [
+          "password",
+          "reset"
+        ],
+        "topic": "access"
+      }
+    },
+    {
+      "expected_document_id": "z-specialist",
+      "group": "development",
+      "query": {
+        "query_id": "dev-specialist",
+        "tokens": [
+          "specialist",
+          "chargeback"
+        ],
+        "topic": "refunds"
+      }
+    }
+  ],
+  "feedback": [
+    {
+      "curator_record_id": "curator-trace-window",
+      "feedback_id": "feedback-window",
+      "target_document_id": "z-policy-current",
+      "trace_id": "trace-window"
+    },
+    {
+      "curator_record_id": "curator-trace-request",
+      "feedback_id": "feedback-request",
+      "target_document_id": "z-policy-current",
+      "trace_id": "trace-request"
+    }
+  ],
+  "schema_version": 1,
+  "traces": [
+    {
+      "baseline_version_id": "8c2bdf4ba407cd2404072cb751e4897375a16b2d2c56cf1642b3ef70b7d6fbea",
+      "observed_document_id": "a-policy-old",
+      "query": {
+        "query_id": "feedback-window",
+        "tokens": [
+          "refund",
+          "window"
+        ],
+        "topic": "refunds"
+      },
+      "trace_id": "trace-window"
+    },
+    {
+      "baseline_version_id": "8c2bdf4ba407cd2404072cb751e4897375a16b2d2c56cf1642b3ef70b7d6fbea",
+      "observed_document_id": "a-policy-old",
+      "query": {
+        "query_id": "feedback-request",
+        "tokens": [
+          "refund",
+          "request"
+        ],
+        "topic": "refunds"
+      },
+      "trace_id": "trace-request"
+    }
+  ]
+}

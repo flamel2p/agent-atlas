@@ -1,0 +1,15 @@
+{
+  "records": [
+    {
+      "record_id": "curator-trace-window",
+      "target_document_id": "z-policy-current",
+      "trace_id": "trace-window"
+    },
+    {
+      "record_id": "curator-trace-request",
+      "target_document_id": "z-policy-current",
+      "trace_id": "trace-request"
+    }
+  ],
+  "schema_version": 1
+}

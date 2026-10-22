@@ -1,0 +1,30 @@
+{
+  "cases": [
+    {
+      "expected_document_id": "z-specialist",
+      "group": "recent",
+      "query": {
+        "query_id": "recent-unchanged",
+        "tokens": [
+          "specialist",
+          "chargeback",
+          "policy"
+        ],
+        "topic": "refunds"
+      }
+    },
+    {
+      "expected_document_id": "a-billing",
+      "group": "stable",
+      "query": {
+        "query_id": "stable-unchanged",
+        "tokens": [
+          "download",
+          "receipt"
+        ],
+        "topic": "billing"
+      }
+    }
+  ],
+  "schema_version": 1
+}

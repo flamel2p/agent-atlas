@@ -1,0 +1,89 @@
+{
+  "cases": [
+    {
+      "expected_document_id": "z-policy-current",
+      "group": "recent",
+      "query": {
+        "query_id": "recent-deadline",
+        "tokens": [
+          "refund",
+          "deadline"
+        ],
+        "topic": "refunds"
+      }
+    },
+    {
+      "expected_document_id": "z-policy-current",
+      "group": "recent",
+      "query": {
+        "query_id": "recent-policy",
+        "tokens": [
+          "refund",
+          "policy"
+        ],
+        "topic": "refunds"
+      }
+    },
+    {
+      "expected_document_id": "z-policy-current",
+      "group": "recent",
+      "query": {
+        "query_id": "recent-status",
+        "tokens": [
+          "refund",
+          "status"
+        ],
+        "topic": "refunds"
+      }
+    },
+    {
+      "expected_document_id": "a-billing",
+      "group": "stable",
+      "query": {
+        "query_id": "stable-billing",
+        "tokens": [
+          "invoice",
+          "pdf"
+        ],
+        "topic": "billing"
+      }
+    },
+    {
+      "expected_document_id": "a-access",
+      "group": "stable",
+      "query": {
+        "query_id": "stable-access",
+        "tokens": [
+          "account",
+          "login"
+        ],
+        "topic": "access"
+      }
+    },
+    {
+      "expected_document_id": "z-specialist",
+      "group": "stable",
+      "query": {
+        "query_id": "stable-specialist",
+        "tokens": [
+          "refund",
+          "specialist",
+          "chargeback"
+        ],
+        "topic": "refunds"
+      }
+    },
+    {
+      "expected_document_id": null,
+      "group": "stable",
+      "query": {
+        "query_id": "stable-no-match",
+        "tokens": [
+          "unknown"
+        ],
+        "topic": "refunds"
+      }
+    }
+  ],
+  "schema_version": 1
+}
