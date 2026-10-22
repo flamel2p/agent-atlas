@@ -1,0 +1,16 @@
+[build-system]
+requires = ["hatchling==1.32.4"]
+build-backend = "hatchling.build"
+
+[project]
+name = "verification-agent"
+version = "0.1.0"
+description = "Bounded verification of structured synthetic claims against bundled evidence"
+requires-python = ">=3.14,<3.15"
+dependencies = []
+
+[project.scripts]
+verification-agent = "verification_agent.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/verification_agent"]

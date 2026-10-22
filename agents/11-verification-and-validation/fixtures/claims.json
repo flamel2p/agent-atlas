@@ -1,0 +1,41 @@
+{
+  "as_of": "2026-10-21",
+  "claims": [
+    {
+      "id": "latency-fall",
+      "entity": "atlas",
+      "metric": "latency_change",
+      "period": "2026-Q3",
+      "baseline_period": "2026-Q2",
+      "value": "-5",
+      "unit": "relative_percent"
+    },
+    {
+      "id": "adoption-rise",
+      "entity": "atlas",
+      "metric": "adoption_change",
+      "period": "2026-Q3",
+      "baseline_period": "2026-Q2",
+      "value": "2.5",
+      "unit": "percentage_point"
+    },
+    {
+      "id": "tickets-resolved",
+      "entity": "atlas",
+      "metric": "resolved_tickets",
+      "period": "2026-Q3",
+      "baseline_period": null,
+      "value": "120",
+      "unit": "count"
+    },
+    {
+      "id": "latency-level",
+      "entity": "atlas",
+      "metric": "latency",
+      "period": "2026-Q3",
+      "baseline_period": null,
+      "value": "240",
+      "unit": "milliseconds"
+    }
+  ]
+}

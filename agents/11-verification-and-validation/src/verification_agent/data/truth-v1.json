@@ -1,0 +1,191 @@
+{
+  "version": "truth-v1",
+  "metrics": [
+    {
+      "metric": "latency_change",
+      "unit": "relative_percent",
+      "baseline": "required",
+      "tolerance": "0.5",
+      "domain": "signed"
+    },
+    {
+      "metric": "adoption_change",
+      "unit": "percentage_point",
+      "baseline": "required",
+      "tolerance": "0.5",
+      "domain": "percentage_point"
+    },
+    {
+      "metric": "resolved_tickets",
+      "unit": "count",
+      "baseline": "none",
+      "tolerance": "0",
+      "domain": "nonnegative_integer"
+    },
+    {
+      "metric": "latency",
+      "unit": "milliseconds",
+      "baseline": "none",
+      "tolerance": "1",
+      "domain": "nonnegative"
+    }
+  ],
+  "records": [
+    {
+      "id": "latency-change-primary",
+      "entity": "atlas",
+      "metric": "latency_change",
+      "period": "2026-Q3",
+      "baseline_period": "2026-Q2",
+      "value": "-5",
+      "unit": "relative_percent",
+      "source": "Synthetic release ledger",
+      "valid_from": "2026-10-01",
+      "valid_through": "2026-12-31"
+    },
+    {
+      "id": "latency-change-corroboration",
+      "entity": "atlas",
+      "metric": "latency_change",
+      "period": "2026-Q3",
+      "baseline_period": "2026-Q2",
+      "value": "-5",
+      "unit": "relative_percent",
+      "source": "Synthetic release ledger",
+      "valid_from": "2026-10-01",
+      "valid_through": "2026-12-31"
+    },
+    {
+      "id": "latency-change-expired",
+      "entity": "atlas",
+      "metric": "latency_change",
+      "period": "2026-Q3",
+      "baseline_period": "2026-Q2",
+      "value": "-9",
+      "unit": "relative_percent",
+      "source": "Synthetic release ledger",
+      "valid_from": "2026-07-01",
+      "valid_through": "2026-09-30"
+    },
+    {
+      "id": "latency-change-future",
+      "entity": "atlas",
+      "metric": "latency_change",
+      "period": "2026-Q3",
+      "baseline_period": "2026-Q2",
+      "value": "-7",
+      "unit": "relative_percent",
+      "source": "Synthetic release ledger",
+      "valid_from": "2027-01-01",
+      "valid_through": "2027-03-31"
+    },
+    {
+      "id": "adoption-primary",
+      "entity": "atlas",
+      "metric": "adoption_change",
+      "period": "2026-Q3",
+      "baseline_period": "2026-Q2",
+      "value": "2.5",
+      "unit": "percentage_point",
+      "source": "Synthetic release ledger",
+      "valid_from": "2026-10-01",
+      "valid_through": "2026-12-31"
+    },
+    {
+      "id": "tickets-primary",
+      "entity": "atlas",
+      "metric": "resolved_tickets",
+      "period": "2026-Q3",
+      "baseline_period": null,
+      "value": "120",
+      "unit": "count",
+      "source": "Synthetic release ledger",
+      "valid_from": "2026-10-01",
+      "valid_through": "2026-12-31"
+    },
+    {
+      "id": "latency-primary",
+      "entity": "atlas",
+      "metric": "latency",
+      "period": "2026-Q3",
+      "baseline_period": null,
+      "value": "240",
+      "unit": "milliseconds",
+      "source": "Synthetic release ledger",
+      "valid_from": "2026-10-01",
+      "valid_through": "2026-12-31"
+    },
+    {
+      "id": "fork-primary",
+      "entity": "fork",
+      "metric": "latency_change",
+      "period": "2026-Q3",
+      "baseline_period": "2026-Q2",
+      "value": "-5",
+      "unit": "relative_percent",
+      "source": "Synthetic release ledger",
+      "valid_from": "2026-10-01",
+      "valid_through": "2026-12-31"
+    },
+    {
+      "id": "fork-alternative",
+      "entity": "fork",
+      "metric": "latency_change",
+      "period": "2026-Q3",
+      "baseline_period": "2026-Q2",
+      "value": "-4.9",
+      "unit": "relative_percent",
+      "source": "Synthetic release ledger",
+      "valid_from": "2026-10-01",
+      "valid_through": "2026-12-31"
+    },
+    {
+      "id": "archive-primary",
+      "entity": "archive",
+      "metric": "latency_change",
+      "period": "2026-Q3",
+      "baseline_period": "2026-Q2",
+      "value": "-5",
+      "unit": "relative_percent",
+      "source": "Synthetic release ledger",
+      "valid_from": "2026-10-01",
+      "valid_through": "2026-10-20"
+    },
+    {
+      "id": "preview-primary",
+      "entity": "preview",
+      "metric": "latency_change",
+      "period": "2026-Q3",
+      "baseline_period": "2026-Q2",
+      "value": "-5",
+      "unit": "relative_percent",
+      "source": "Synthetic release ledger",
+      "valid_from": "2026-10-22",
+      "valid_through": "2026-12-31"
+    },
+    {
+      "id": "quiet-primary",
+      "entity": "quiet",
+      "metric": "latency_change",
+      "period": "2026-Q3",
+      "baseline_period": "2026-Q2",
+      "value": "0",
+      "unit": "relative_percent",
+      "source": "Synthetic release ledger",
+      "valid_from": "2026-10-01",
+      "valid_through": "2026-12-31"
+    },
+    {
+      "id": "tiny-primary",
+      "entity": "tiny",
+      "metric": "latency_change",
+      "period": "2026-Q3",
+      "baseline_period": "2026-Q2",
+      "value": "-0.1",
+      "unit": "relative_percent",
+      "source": "Synthetic release ledger",
+      "valid_from": "2026-10-01",
+      "valid_through": "2026-12-31"
+    }
+  ]
+}
