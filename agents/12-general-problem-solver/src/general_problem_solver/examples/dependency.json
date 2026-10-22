@@ -1,0 +1,9 @@
+{
+  "horizon": 4,
+  "resources": [{"id": "bench", "capacity": 1}],
+  "tasks": [
+    {"id": "a", "duration": 2, "earliest_start": 0, "latest_finish": 4, "requires": {}, "after": []},
+    {"id": "b", "duration": 2, "earliest_start": 0, "latest_finish": 4, "requires": {}, "after": ["a"]}
+  ],
+  "budget": {"iterations": 5, "evaluations": 200}
+}

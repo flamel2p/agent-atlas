@@ -1,0 +1,14 @@
+{
+  "as_of": "2026-10-21",
+  "claims": [
+    {
+      "id": "latency-fall",
+      "entity": "atlas",
+      "metric": "latency_change",
+      "period": "2026-Q3",
+      "baseline_period": "2026-Q2",
+      "value": "-4.499999",
+      "unit": "relative_percent"
+    }
+  ]
+}
