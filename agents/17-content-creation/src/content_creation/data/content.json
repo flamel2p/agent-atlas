@@ -1,0 +1,46 @@
+{
+  "product": "LumenBoard",
+  "sources": [
+    {"id": "demo_scope", "title": "Synthetic demonstration scope"},
+    {"id": "demo_features", "title": "Synthetic feature register"},
+    {"id": "demo_controls", "title": "Synthetic controls register"}
+  ],
+  "facts": [
+    {"id": "availability", "source_id": "demo_scope", "text": "LumenBoard is available only in the synthetic demonstration workspace."},
+    {"id": "boards", "source_id": "demo_features", "text": "LumenBoard supports up to three project boards per demonstration workspace."},
+    {"id": "exports", "source_id": "demo_features", "text": "LumenBoard exports project summaries as CSV files in this demonstration."},
+    {"id": "reminders", "source_id": "demo_features", "text": "LumenBoard sends reminders only inside the demonstration workspace."},
+    {"id": "history", "source_id": "demo_controls", "text": "LumenBoard keeps a seven-day activity history in this demonstration."},
+    {"id": "access", "source_id": "demo_controls", "text": "LumenBoard uses team-level access settings in this demonstration."}
+  ],
+  "copy": {
+    "email": {
+      "title": ["LumenBoard team update", "LumenBoard update"],
+      "opening": ["Discover seamless coordination.", "Explore the available workflow.", "Review the project changes."],
+      "next_step": ["Review the details with your team.", "Discuss the details."]
+    },
+    "documentation": {
+      "title": ["LumenBoard release note", "LumenBoard notes"],
+      "opening": ["Discover seamless coordination.", "Explore the available workflow.", "Review the project changes."],
+      "next_step": ["Share feedback with your project team.", "Share feedback."]
+    }
+  },
+  "priorities": {
+    "team_leads": [
+      {"fact_id": "availability", "rank": 0},
+      {"fact_id": "boards", "rank": 1},
+      {"fact_id": "reminders", "rank": 2},
+      {"fact_id": "access", "rank": 3},
+      {"fact_id": "history", "rank": 3},
+      {"fact_id": "exports", "rank": 4}
+    ],
+    "developers": [
+      {"fact_id": "availability", "rank": 0},
+      {"fact_id": "exports", "rank": 1},
+      {"fact_id": "access", "rank": 2},
+      {"fact_id": "history", "rank": 2},
+      {"fact_id": "boards", "rank": 3},
+      {"fact_id": "reminders", "rank": 4}
+    ]
+  }
+}

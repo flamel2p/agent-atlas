@@ -1,0 +1,22 @@
+[build-system]
+requires = ["hatchling==1.32.4"]
+build-backend = "hatchling.build"
+
+[project]
+name = "agent17-content-creation"
+version = "0.1.0"
+description = "Bounded synthetic content composition with exact evidence and review-driven revision"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.14,<3.15"
+dependencies = []
+
+[project.scripts]
+content-creation = "content_creation.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/content_creation"]
+
+[tool.hatch.build.targets.sdist]
+include = ["src", "tests", "scripts", "*.md", "LICENSE", "pyproject.toml", "uv.lock", ".python-version", ".gitignore"]
