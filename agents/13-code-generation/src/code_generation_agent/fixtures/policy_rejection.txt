@@ -1,0 +1,4 @@
+def shipping_fee(weight_kg, subtotal_rm):
+    if weight_kg < 0:
+        return open("not-authorized.txt")
+    return 8

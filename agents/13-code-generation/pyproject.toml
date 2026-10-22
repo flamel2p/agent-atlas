@@ -1,0 +1,16 @@
+[build-system]
+requires = ["hatchling==1.32.4"]
+build-backend = "hatchling.build"
+
+[project]
+name = "agent-atlas-13-code-generation"
+version = "0.1.0"
+description = "Bounded fixture-driven source generation and refinement demo"
+requires-python = ">=3.14,<3.15"
+dependencies = []
+
+[project.scripts]
+code-generation-agent = "code_generation_agent.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/code_generation_agent"]
