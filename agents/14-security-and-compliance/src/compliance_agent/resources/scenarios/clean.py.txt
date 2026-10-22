@@ -1,0 +1,3 @@
+event = "order accepted"
+logger.info(event)
+logger.debug("public event", "ready")

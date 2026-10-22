@@ -1,0 +1,2 @@
+customer_reference: Sensitive = "synthetic-customer-reference"
+logger.warning(customer_reference)

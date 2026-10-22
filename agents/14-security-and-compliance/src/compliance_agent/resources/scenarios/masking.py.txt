@@ -1,0 +1,2 @@
+credential: Sensitive = "synthetic-credential"
+logger.info(mask(credential))
