@@ -1,0 +1,50 @@
+{
+  "records": [
+    {
+      "record_id": "curator-trace-unknown-target",
+      "target_document_id": "z-policy-current",
+      "trace_id": "trace-unknown-target"
+    },
+    {
+      "record_id": "curator-trace-wrong-baseline",
+      "target_document_id": "z-policy-current",
+      "trace_id": "trace-wrong-baseline"
+    },
+    {
+      "record_id": "curator-trace-replay",
+      "target_document_id": "z-policy-current",
+      "trace_id": "trace-replay"
+    },
+    {
+      "record_id": "curator-trace-cross-topic",
+      "target_document_id": "z-policy-current",
+      "trace_id": "trace-cross-topic"
+    },
+    {
+      "record_id": "curator-trace-irrelevant",
+      "target_document_id": "z-policy-current",
+      "trace_id": "trace-irrelevant"
+    },
+    {
+      "record_id": "curator-trace-unknown-curator",
+      "target_document_id": "z-policy-current",
+      "trace_id": "trace-unknown-curator"
+    },
+    {
+      "record_id": "curator-trace-curator-mismatch",
+      "target_document_id": "z-policy-current",
+      "trace_id": "trace-curator-mismatch"
+    },
+    {
+      "record_id": "curator-trace-older",
+      "target_document_id": "z-ancient",
+      "trace_id": "trace-older"
+    },
+    {
+      "record_id": "curator-trace-conflict",
+      "target_document_id": "z-policy-current",
+      "trace_id": "trace-conflict"
+    }
+  ],
+  "schema_version": 1
+}

@@ -1,0 +1,321 @@
+{
+  "baseline": {
+    "config": {
+      "recency_topic": null
+    }
+  },
+  "corpus": [
+    {
+      "answer": "Synthetic previous policy: refund requests close after 14 days.",
+      "document_id": "a-policy-old",
+      "revision": 2,
+      "tokens": [
+        "refund",
+        "policy",
+        "window",
+        "request",
+        "deadline",
+        "status"
+      ],
+      "topic": "refunds"
+    },
+    {
+      "answer": "Synthetic current policy: refund requests close after 30 days.",
+      "document_id": "z-policy-current",
+      "revision": 3,
+      "tokens": [
+        "refund",
+        "policy",
+        "window",
+        "request",
+        "deadline",
+        "status"
+      ],
+      "topic": "refunds"
+    },
+    {
+      "answer": "Synthetic retired policy: refund requests close after 7 days.",
+      "document_id": "z-ancient",
+      "revision": 1,
+      "tokens": [
+        "refund",
+        "policy",
+        "window",
+        "request",
+        "deadline",
+        "status"
+      ],
+      "topic": "refunds"
+    },
+    {
+      "answer": "Synthetic chargebacks require specialist review.",
+      "document_id": "z-specialist",
+      "revision": 4,
+      "tokens": [
+        "refund",
+        "specialist",
+        "chargeback"
+      ],
+      "topic": "refunds"
+    },
+    {
+      "answer": "Synthetic entry with no relevant token overlap.",
+      "document_id": "z-unused",
+      "revision": 10,
+      "tokens": [
+        "unused"
+      ],
+      "topic": "refunds"
+    },
+    {
+      "answer": "Reset the synthetic password in account settings.",
+      "document_id": "a-access",
+      "revision": 1,
+      "tokens": [
+        "password",
+        "reset",
+        "account",
+        "login"
+      ],
+      "topic": "access"
+    },
+    {
+      "answer": "Synthetic newer access instructions outside the selected topic.",
+      "document_id": "z-access-new",
+      "revision": 2,
+      "tokens": [
+        "password",
+        "reset",
+        "account",
+        "login"
+      ],
+      "topic": "access"
+    },
+    {
+      "answer": "Download the synthetic invoice PDF from billing.",
+      "document_id": "a-billing",
+      "revision": 1,
+      "tokens": [
+        "invoice",
+        "receipt",
+        "download",
+        "pdf"
+      ],
+      "topic": "billing"
+    }
+  ],
+  "development_controls": [
+    {
+      "expected_document_id": "a-access",
+      "group": "development",
+      "query": {
+        "query_id": "dev-access",
+        "tokens": [
+          "password",
+          "reset"
+        ],
+        "topic": "access"
+      }
+    },
+    {
+      "expected_document_id": "z-specialist",
+      "group": "development",
+      "query": {
+        "query_id": "dev-specialist",
+        "tokens": [
+          "specialist",
+          "chargeback"
+        ],
+        "topic": "refunds"
+      }
+    }
+  ],
+  "feedback": [
+    {
+      "curator_record_id": "curator-trace-unknown-target",
+      "feedback_id": "feedback-unknown-target",
+      "target_document_id": "unknown-document",
+      "trace_id": "trace-unknown-target"
+    },
+    {
+      "curator_record_id": "curator-trace-wrong-baseline",
+      "feedback_id": "feedback-wrong-baseline",
+      "target_document_id": "z-policy-current",
+      "trace_id": "trace-wrong-baseline"
+    },
+    {
+      "curator_record_id": "curator-trace-replay",
+      "feedback_id": "feedback-replay",
+      "target_document_id": "z-policy-current",
+      "trace_id": "trace-replay"
+    },
+    {
+      "curator_record_id": "curator-trace-cross-topic",
+      "feedback_id": "feedback-cross-topic",
+      "target_document_id": "z-access-new",
+      "trace_id": "trace-cross-topic"
+    },
+    {
+      "curator_record_id": "curator-trace-irrelevant",
+      "feedback_id": "feedback-irrelevant",
+      "target_document_id": "z-unused",
+      "trace_id": "trace-irrelevant"
+    },
+    {
+      "curator_record_id": "unknown-curator",
+      "feedback_id": "feedback-unknown-curator",
+      "target_document_id": "z-policy-current",
+      "trace_id": "trace-unknown-curator"
+    },
+    {
+      "curator_record_id": "curator-trace-wrong-baseline",
+      "feedback_id": "feedback-curator-mismatch",
+      "target_document_id": "z-policy-current",
+      "trace_id": "trace-curator-mismatch"
+    },
+    {
+      "curator_record_id": "curator-trace-older",
+      "feedback_id": "feedback-older",
+      "target_document_id": "z-ancient",
+      "trace_id": "trace-older"
+    },
+    {
+      "curator_record_id": "curator-trace-conflict",
+      "feedback_id": "feedback-conflict",
+      "target_document_id": "z-policy-current",
+      "trace_id": "trace-conflict"
+    },
+    {
+      "curator_record_id": "curator-trace-conflict",
+      "feedback_id": "feedback-conflict-second",
+      "target_document_id": "z-specialist",
+      "trace_id": "trace-conflict"
+    },
+    {
+      "curator_record_id": "unknown-curator",
+      "feedback_id": "feedback-unknown-trace",
+      "target_document_id": "z-policy-current",
+      "trace_id": "unknown-trace"
+    }
+  ],
+  "schema_version": 1,
+  "traces": [
+    {
+      "baseline_version_id": "8c2bdf4ba407cd2404072cb751e4897375a16b2d2c56cf1642b3ef70b7d6fbea",
+      "observed_document_id": "a-policy-old",
+      "query": {
+        "query_id": "query-unknown-target",
+        "tokens": [
+          "refund",
+          "audit0"
+        ],
+        "topic": "refunds"
+      },
+      "trace_id": "trace-unknown-target"
+    },
+    {
+      "baseline_version_id": "0000000000000000000000000000000000000000000000000000000000000000",
+      "observed_document_id": "a-policy-old",
+      "query": {
+        "query_id": "query-wrong-baseline",
+        "tokens": [
+          "refund",
+          "audit1"
+        ],
+        "topic": "refunds"
+      },
+      "trace_id": "trace-wrong-baseline"
+    },
+    {
+      "baseline_version_id": "8c2bdf4ba407cd2404072cb751e4897375a16b2d2c56cf1642b3ef70b7d6fbea",
+      "observed_document_id": "z-policy-current",
+      "query": {
+        "query_id": "query-replay",
+        "tokens": [
+          "refund",
+          "audit2"
+        ],
+        "topic": "refunds"
+      },
+      "trace_id": "trace-replay"
+    },
+    {
+      "baseline_version_id": "8c2bdf4ba407cd2404072cb751e4897375a16b2d2c56cf1642b3ef70b7d6fbea",
+      "observed_document_id": "a-policy-old",
+      "query": {
+        "query_id": "query-cross-topic",
+        "tokens": [
+          "refund",
+          "audit3"
+        ],
+        "topic": "refunds"
+      },
+      "trace_id": "trace-cross-topic"
+    },
+    {
+      "baseline_version_id": "8c2bdf4ba407cd2404072cb751e4897375a16b2d2c56cf1642b3ef70b7d6fbea",
+      "observed_document_id": "a-policy-old",
+      "query": {
+        "query_id": "query-irrelevant",
+        "tokens": [
+          "refund",
+          "audit4"
+        ],
+        "topic": "refunds"
+      },
+      "trace_id": "trace-irrelevant"
+    },
+    {
+      "baseline_version_id": "8c2bdf4ba407cd2404072cb751e4897375a16b2d2c56cf1642b3ef70b7d6fbea",
+      "observed_document_id": "a-policy-old",
+      "query": {
+        "query_id": "query-unknown-curator",
+        "tokens": [
+          "refund",
+          "audit5"
+        ],
+        "topic": "refunds"
+      },
+      "trace_id": "trace-unknown-curator"
+    },
+    {
+      "baseline_version_id": "8c2bdf4ba407cd2404072cb751e4897375a16b2d2c56cf1642b3ef70b7d6fbea",
+      "observed_document_id": "a-policy-old",
+      "query": {
+        "query_id": "query-curator-mismatch",
+        "tokens": [
+          "refund",
+          "audit6"
+        ],
+        "topic": "refunds"
+      },
+      "trace_id": "trace-curator-mismatch"
+    },
+    {
+      "baseline_version_id": "8c2bdf4ba407cd2404072cb751e4897375a16b2d2c56cf1642b3ef70b7d6fbea",
+      "observed_document_id": "a-policy-old",
+      "query": {
+        "query_id": "query-older",
+        "tokens": [
+          "refund",
+          "audit7"
+        ],
+        "topic": "refunds"
+      },
+      "trace_id": "trace-older"
+    },
+    {
+      "baseline_version_id": "8c2bdf4ba407cd2404072cb751e4897375a16b2d2c56cf1642b3ef70b7d6fbea",
+      "observed_document_id": "a-policy-old",
+      "query": {
+        "query_id": "query-conflict",
+        "tokens": [
+          "refund",
+          "audit8"
+        ],
+        "topic": "refunds"
+      },
+      "trace_id": "trace-conflict"
+    }
+  ]
+}

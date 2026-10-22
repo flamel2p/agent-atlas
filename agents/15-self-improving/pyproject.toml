@@ -1,0 +1,19 @@
+[build-system]
+requires = ["hatchling==1.32.4"]
+build-backend = "hatchling.build"
+
+[project]
+name = "agent-atlas-self-improving"
+version = "0.1.0"
+description = "One bounded, fixture-only retrieval adaptation experiment"
+readme = "README.md"
+requires-python = ">=3.14,<3.15"
+license = "MIT"
+license-files = ["LICENSE"]
+dependencies = []
+
+[project.scripts]
+self-improving-agent = "self_improving.__main__:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/self_improving"]
