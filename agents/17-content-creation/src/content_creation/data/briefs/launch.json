@@ -1,0 +1,7 @@
+{
+  "audience": "team_leads",
+  "required_fact_ids": ["availability", "boards", "exports"],
+  "forbidden_phrases": ["seamless"],
+  "email_max_words": 120,
+  "docs_max_words": 120
+}

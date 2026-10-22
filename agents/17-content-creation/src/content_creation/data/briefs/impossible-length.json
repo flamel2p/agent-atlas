@@ -1,0 +1,7 @@
+{
+  "audience": "team_leads",
+  "required_fact_ids": ["availability", "boards", "exports", "reminders", "history", "access"],
+  "forbidden_phrases": [],
+  "email_max_words": 1,
+  "docs_max_words": 1
+}
