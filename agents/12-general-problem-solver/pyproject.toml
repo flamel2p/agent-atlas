@@ -1,0 +1,17 @@
+[build-system]
+requires = ["hatchling==1.32.4"]
+build-backend = "hatchling.build"
+
+[project]
+name = "general-problem-solver"
+version = "0.1.0"
+description = "A bounded scheduling puzzle with feedback-directed local repair"
+readme = "README.md"
+requires-python = ">=3.14,<3.15"
+dependencies = []
+
+[project.scripts]
+general-problem-solver = "general_problem_solver.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/general_problem_solver"]

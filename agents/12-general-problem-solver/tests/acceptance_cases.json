@@ -1,0 +1,808 @@
+{
+  "source": "Agent 12 SPEC.md, read independently before any implementation inspection",
+  "expected_field_names_are_test_metadata_not_runtime_serializer_assumptions": true,
+  "cases": [
+    {
+      "name": "exact_windows_dependency_and_halfopen_capacity",
+      "input": {
+        "horizon": 4,
+        "resources": [
+          {
+            "id": "bench",
+            "capacity": 2
+          }
+        ],
+        "tasks": [
+          {
+            "id": "b",
+            "duration": 2,
+            "earliest_start": 2,
+            "latest_finish": 4,
+            "requires": {
+              "bench": 2
+            },
+            "after": [
+              "a"
+            ]
+          },
+          {
+            "id": "a",
+            "duration": 2,
+            "earliest_start": 0,
+            "latest_finish": 2,
+            "requires": {
+              "bench": 2
+            },
+            "after": []
+          }
+        ],
+        "budget": {
+          "iterations": 8,
+          "evaluations": 200
+        }
+      },
+      "independent_expected": {
+        "outcome": "solved",
+        "termination": "feasible",
+        "proposal_count": 1,
+        "evaluated_candidate_count": 1,
+        "selected_start_assignments": [
+          {
+            "a": 0,
+            "b": 2
+          }
+        ],
+        "selected_scores": [
+          0
+        ],
+        "rationale": "A finishes exactly at its latest finish. B starts at its earliest start and exactly at A finish. Each consumes full capacity on disjoint half-open intervals. Input task order must not affect canonical ID order.",
+        "initial_violation_facts": [],
+        "feasible_assignments": [
+          {
+            "a": 0,
+            "b": 2
+          }
+        ]
+      }
+    },
+    {
+      "name": "duration_exceeds_window_is_valid_unsolved_input",
+      "input": {
+        "horizon": 4,
+        "resources": [
+          {
+            "id": "bench",
+            "capacity": 1
+          }
+        ],
+        "tasks": [
+          {
+            "id": "a",
+            "duration": 3,
+            "earliest_start": 1,
+            "latest_finish": 3,
+            "requires": {},
+            "after": []
+          }
+        ],
+        "budget": {
+          "iterations": 8,
+          "evaluations": 200
+        }
+      },
+      "independent_expected": {
+        "outcome": "unsolved",
+        "termination": "local_minimum",
+        "proposal_count": 1,
+        "evaluated_candidate_count": 2,
+        "selected_start_assignments": [
+          {
+            "a": 1
+          }
+        ],
+        "selected_scores": [
+          1
+        ],
+        "rationale": "At start 1, finish 4 exceeds latest finish 3 by 1. The only other horizon-valid start is 0, which misses earliest start 1 by 1. Neither is feasible and equal score must not be selected.",
+        "initial_violation_facts": [
+          {
+            "kind": "window",
+            "affected": [
+              "a"
+            ],
+            "excess": 1,
+            "cause": "finish after latest finish"
+          }
+        ],
+        "feasible_assignments": []
+      }
+    },
+    {
+      "name": "dependency_deficit_and_iteration_precedence",
+      "input": {
+        "horizon": 4,
+        "resources": [
+          {
+            "id": "bench",
+            "capacity": 1
+          }
+        ],
+        "tasks": [
+          {
+            "id": "b",
+            "duration": 1,
+            "earliest_start": 0,
+            "latest_finish": 4,
+            "requires": {},
+            "after": [
+              "a"
+            ]
+          },
+          {
+            "id": "a",
+            "duration": 2,
+            "earliest_start": 1,
+            "latest_finish": 4,
+            "requires": {},
+            "after": []
+          }
+        ],
+        "budget": {
+          "iterations": 1,
+          "evaluations": 1
+        }
+      },
+      "independent_expected": {
+        "outcome": "unsolved",
+        "termination": "iteration_limit",
+        "proposal_count": 1,
+        "evaluated_candidate_count": 1,
+        "selected_start_assignments": [
+          {
+            "a": 1,
+            "b": 0
+          }
+        ],
+        "selected_scores": [
+          3
+        ],
+        "rationale": "A finishes at tick 3 while B starts at 0. The dependency excess is 3. Both budgets are already exhausted after the initial proposal, so iteration_limit has specified precedence.",
+        "initial_violation_facts": [
+          {
+            "kind": "dependency",
+            "affected": [
+              "a",
+              "b"
+            ],
+            "excess": 3
+          }
+        ],
+        "feasible_assignments": [
+          {
+            "a": 1,
+            "b": 3
+          }
+        ]
+      }
+    },
+    {
+      "name": "multiple_resources_and_all_capacity_contributors",
+      "input": {
+        "horizon": 3,
+        "resources": [
+          {
+            "id": "gpu",
+            "capacity": 1
+          },
+          {
+            "id": "cpu",
+            "capacity": 2
+          }
+        ],
+        "tasks": [
+          {
+            "id": "a",
+            "duration": 2,
+            "earliest_start": 0,
+            "latest_finish": 3,
+            "requires": {
+              "cpu": 2,
+              "gpu": 1
+            },
+            "after": []
+          },
+          {
+            "id": "b",
+            "duration": 2,
+            "earliest_start": 0,
+            "latest_finish": 3,
+            "requires": {
+              "cpu": 1,
+              "gpu": 1
+            },
+            "after": []
+          },
+          {
+            "id": "c",
+            "duration": 1,
+            "earliest_start": 1,
+            "latest_finish": 3,
+            "requires": {
+              "cpu": 1
+            },
+            "after": []
+          }
+        ],
+        "budget": {
+          "iterations": 1,
+          "evaluations": 200
+        }
+      },
+      "independent_expected": {
+        "outcome": "unsolved",
+        "termination": "iteration_limit",
+        "proposal_count": 1,
+        "evaluated_candidate_count": 1,
+        "selected_start_assignments": [
+          {
+            "a": 0,
+            "b": 0,
+            "c": 1
+          }
+        ],
+        "selected_scores": [
+          5
+        ],
+        "rationale": "CPU totals are 3 at tick 0 and 4 at tick 1 against capacity 2. GPU totals are 2 at ticks 0 and 1 against capacity 1. Four violations sum to 5, and the tick-1 CPU violation must name all three contributors.",
+        "initial_violation_facts": [
+          {
+            "kind": "capacity",
+            "resource": "cpu",
+            "tick": 0,
+            "affected": [
+              "a",
+              "b"
+            ],
+            "excess": 1
+          },
+          {
+            "kind": "capacity",
+            "resource": "cpu",
+            "tick": 1,
+            "affected": [
+              "a",
+              "b",
+              "c"
+            ],
+            "excess": 2
+          },
+          {
+            "kind": "capacity",
+            "resource": "gpu",
+            "tick": 0,
+            "affected": [
+              "a",
+              "b"
+            ],
+            "excess": 1
+          },
+          {
+            "kind": "capacity",
+            "resource": "gpu",
+            "tick": 1,
+            "affected": [
+              "a",
+              "b"
+            ],
+            "excess": 1
+          }
+        ],
+        "feasible_assignments": []
+      }
+    },
+    {
+      "name": "feasibility_on_exact_last_evaluation",
+      "input": {
+        "horizon": 4,
+        "resources": [
+          {
+            "id": "bench",
+            "capacity": 1
+          }
+        ],
+        "tasks": [
+          {
+            "id": "a",
+            "duration": 2,
+            "earliest_start": 0,
+            "latest_finish": 4,
+            "requires": {
+              "bench": 1
+            },
+            "after": []
+          },
+          {
+            "id": "b",
+            "duration": 2,
+            "earliest_start": 0,
+            "latest_finish": 4,
+            "requires": {
+              "bench": 1
+            },
+            "after": []
+          }
+        ],
+        "budget": {
+          "iterations": 5,
+          "evaluations": 3
+        }
+      },
+      "independent_expected": {
+        "outcome": "solved",
+        "termination": "feasible",
+        "proposal_count": 2,
+        "evaluated_candidate_count": 3,
+        "selected_start_assignments": [
+          {
+            "a": 0,
+            "b": 0
+          },
+          {
+            "a": 2,
+            "b": 0
+          }
+        ],
+        "selected_scores": [
+          2,
+          0
+        ],
+        "rationale": "Baseline consumes evaluation 1. Moving A to 1 consumes evaluation 2 and leaves one overlap tick. Moving A to 2 consumes evaluation 3 and is immediately accepted as feasible even though the evaluation budget is now exhausted. Immediate feasible selection wins before B alternatives are examined.",
+        "feasible_assignments": [
+          {
+            "a": 0,
+            "b": 2
+          },
+          {
+            "a": 2,
+            "b": 0
+          }
+        ]
+      }
+    },
+    {
+      "name": "midscan_budget_retains_best_evaluated_improvement",
+      "input": {
+        "horizon": 6,
+        "resources": [
+          {
+            "id": "bench",
+            "capacity": 1
+          }
+        ],
+        "tasks": [
+          {
+            "id": "c",
+            "duration": 2,
+            "earliest_start": 0,
+            "latest_finish": 6,
+            "requires": {
+              "bench": 1
+            },
+            "after": []
+          },
+          {
+            "id": "a",
+            "duration": 2,
+            "earliest_start": 0,
+            "latest_finish": 6,
+            "requires": {
+              "bench": 1
+            },
+            "after": []
+          },
+          {
+            "id": "b",
+            "duration": 2,
+            "earliest_start": 0,
+            "latest_finish": 6,
+            "requires": {
+              "bench": 1
+            },
+            "after": []
+          }
+        ],
+        "budget": {
+          "iterations": 8,
+          "evaluations": 3
+        }
+      },
+      "independent_expected": {
+        "outcome": "unsolved",
+        "termination": "evaluation_limit",
+        "proposal_count": 2,
+        "evaluated_candidate_count": 3,
+        "selected_start_assignments": [
+          {
+            "a": 0,
+            "b": 0,
+            "c": 0
+          },
+          {
+            "a": 2,
+            "b": 0,
+            "c": 0
+          }
+        ],
+        "selected_scores": [
+          4,
+          2
+        ],
+        "rationale": "The first two alternatives are A=1 with score 3 and A=2 with score 2. The scan ends before A=3. The best evaluated improvement must be recorded as the second proposal. B and C still overlap at ticks 0 and 1.",
+        "final_violation_facts": [
+          {
+            "kind": "capacity",
+            "resource": "bench",
+            "tick": 0,
+            "affected": [
+              "b",
+              "c"
+            ],
+            "excess": 1
+          },
+          {
+            "kind": "capacity",
+            "resource": "bench",
+            "tick": 1,
+            "affected": [
+              "b",
+              "c"
+            ],
+            "excess": 1
+          }
+        ],
+        "feasible_witness": {
+          "a": 0,
+          "b": 2,
+          "c": 4
+        }
+      }
+    },
+    {
+      "name": "full_scan_lexicographic_tie_break",
+      "input": {
+        "horizon": 6,
+        "resources": [
+          {
+            "id": "bench",
+            "capacity": 1
+          }
+        ],
+        "tasks": [
+          {
+            "id": "c",
+            "duration": 2,
+            "earliest_start": 0,
+            "latest_finish": 6,
+            "requires": {
+              "bench": 1
+            },
+            "after": []
+          },
+          {
+            "id": "a",
+            "duration": 2,
+            "earliest_start": 0,
+            "latest_finish": 6,
+            "requires": {
+              "bench": 1
+            },
+            "after": []
+          },
+          {
+            "id": "b",
+            "duration": 2,
+            "earliest_start": 0,
+            "latest_finish": 6,
+            "requires": {
+              "bench": 1
+            },
+            "after": []
+          }
+        ],
+        "budget": {
+          "iterations": 2,
+          "evaluations": 100
+        }
+      },
+      "independent_expected": {
+        "outcome": "unsolved",
+        "termination": "iteration_limit",
+        "proposal_count": 2,
+        "evaluated_candidate_count": 13,
+        "selected_start_assignments": [
+          {
+            "a": 0,
+            "b": 0,
+            "c": 0
+          },
+          {
+            "a": 0,
+            "b": 0,
+            "c": 2
+          }
+        ],
+        "selected_scores": [
+          4,
+          2
+        ],
+        "rationale": "All three tasks are initially implicated. Each has four alternative starts, so a full scan uses 12 evaluations after the baseline. Starts 2, 3, and 4 for any one task tie at score 2. The lexicographically smallest full tuple in task-ID order is (0,0,2), even though A alternatives were evaluated first.",
+        "feasible_witness": {
+          "a": 0,
+          "b": 2,
+          "c": 4
+        }
+      }
+    },
+    {
+      "name": "solvable_strict_improvement_local_minimum",
+      "input": {
+        "horizon": 4,
+        "resources": [
+          {
+            "id": "bench",
+            "capacity": 1
+          }
+        ],
+        "tasks": [
+          {
+            "id": "a",
+            "duration": 1,
+            "earliest_start": 2,
+            "latest_finish": 4,
+            "requires": {
+              "bench": 1
+            },
+            "after": []
+          },
+          {
+            "id": "b",
+            "duration": 1,
+            "earliest_start": 1,
+            "latest_finish": 3,
+            "requires": {
+              "bench": 1
+            },
+            "after": []
+          },
+          {
+            "id": "c",
+            "duration": 1,
+            "earliest_start": 1,
+            "latest_finish": 2,
+            "requires": {
+              "bench": 1
+            },
+            "after": []
+          }
+        ],
+        "budget": {
+          "iterations": 8,
+          "evaluations": 200
+        }
+      },
+      "independent_expected": {
+        "outcome": "unsolved",
+        "termination": "local_minimum",
+        "proposal_count": 1,
+        "evaluated_candidate_count": 7,
+        "selected_start_assignments": [
+          {
+            "a": 2,
+            "b": 1,
+            "c": 1
+          }
+        ],
+        "selected_scores": [
+          1
+        ],
+        "rationale": "Only B and C contribute to the initial overlap. Their six alternative starts have scores 1,1,1,1,2,2, so no strict improvement exists. Exhaustive enumeration of 64 horizon-valid tuples finds exactly one feasible schedule, (3,2,1). A neutral move of unimplicated A followed by B would solve the puzzle, but the contract forbids this escape.",
+        "initial_violation_facts": [
+          {
+            "kind": "capacity",
+            "resource": "bench",
+            "tick": 1,
+            "affected": [
+              "b",
+              "c"
+            ],
+            "excess": 1
+          }
+        ],
+        "eligible_neighbor_facts": [
+          {
+            "starts": {
+              "a": 2,
+              "b": 0,
+              "c": 1
+            },
+            "score": 1
+          },
+          {
+            "starts": {
+              "a": 2,
+              "b": 2,
+              "c": 1
+            },
+            "score": 1
+          },
+          {
+            "starts": {
+              "a": 2,
+              "b": 3,
+              "c": 1
+            },
+            "score": 1
+          },
+          {
+            "starts": {
+              "a": 2,
+              "b": 1,
+              "c": 0
+            },
+            "score": 1
+          },
+          {
+            "starts": {
+              "a": 2,
+              "b": 1,
+              "c": 2
+            },
+            "score": 2
+          },
+          {
+            "starts": {
+              "a": 2,
+              "b": 1,
+              "c": 3
+            },
+            "score": 2
+          }
+        ],
+        "feasible_assignments": [
+          {
+            "a": 3,
+            "b": 2,
+            "c": 1
+          }
+        ]
+      }
+    },
+    {
+      "name": "incomplete_plateau_scan_is_not_local_minimum",
+      "input": {
+        "horizon": 4,
+        "resources": [
+          {
+            "id": "bench",
+            "capacity": 1
+          }
+        ],
+        "tasks": [
+          {
+            "id": "a",
+            "duration": 1,
+            "earliest_start": 2,
+            "latest_finish": 4,
+            "requires": {
+              "bench": 1
+            },
+            "after": []
+          },
+          {
+            "id": "b",
+            "duration": 1,
+            "earliest_start": 1,
+            "latest_finish": 3,
+            "requires": {
+              "bench": 1
+            },
+            "after": []
+          },
+          {
+            "id": "c",
+            "duration": 1,
+            "earliest_start": 1,
+            "latest_finish": 2,
+            "requires": {
+              "bench": 1
+            },
+            "after": []
+          }
+        ],
+        "budget": {
+          "iterations": 8,
+          "evaluations": 2
+        }
+      },
+      "independent_expected": {
+        "outcome": "unsolved",
+        "termination": "evaluation_limit",
+        "proposal_count": 1,
+        "evaluated_candidate_count": 2,
+        "selected_start_assignments": [
+          {
+            "a": 2,
+            "b": 1,
+            "c": 1
+          }
+        ],
+        "selected_scores": [
+          1
+        ],
+        "rationale": "Only the first eligible alternative B=0 is evaluated after the baseline. Its score remains 1, so history retains only the baseline. The incomplete scan cannot claim local_minimum.",
+        "feasible_assignments": [
+          {
+            "a": 3,
+            "b": 2,
+            "c": 1
+          }
+        ]
+      }
+    },
+    {
+      "name": "demand_above_capacity_is_valid_unsolved_input",
+      "input": {
+        "horizon": 2,
+        "resources": [
+          {
+            "id": "bench",
+            "capacity": 1
+          }
+        ],
+        "tasks": [
+          {
+            "id": "a",
+            "duration": 1,
+            "earliest_start": 0,
+            "latest_finish": 2,
+            "requires": {
+              "bench": 2
+            },
+            "after": []
+          }
+        ],
+        "budget": {
+          "iterations": 8,
+          "evaluations": 200
+        }
+      },
+      "independent_expected": {
+        "outcome": "unsolved",
+        "termination": "local_minimum",
+        "proposal_count": 1,
+        "evaluated_candidate_count": 2,
+        "selected_start_assignments": [
+          {
+            "a": 0
+          }
+        ],
+        "selected_scores": [
+          1
+        ],
+        "rationale": "The positive demand 2 exceeds capacity 1 but is valid input. Either horizon-valid start produces exactly one tick with excess 1. The equal-score alternative is evaluated and rejected.",
+        "initial_violation_facts": [
+          {
+            "kind": "capacity",
+            "resource": "bench",
+            "tick": 0,
+            "affected": [
+              "a"
+            ],
+            "excess": 1
+          }
+        ],
+        "feasible_assignments": []
+      }
+    }
+  ]
+}
