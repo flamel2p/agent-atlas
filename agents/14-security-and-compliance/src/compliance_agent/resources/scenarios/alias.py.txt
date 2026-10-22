@@ -1,0 +1,4 @@
+credential: Sensitive = "synthetic-credential"
+saved = credential
+message = "value=" + saved
+logger.error(f"event {message}")

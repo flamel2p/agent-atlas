@@ -1,0 +1,3 @@
+credential: Sensitive = "synthetic-credential"
+payload: Unclassified = "synthetic-external-value"
+logger.critical(credential + payload)

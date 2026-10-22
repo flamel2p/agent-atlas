@@ -1,0 +1,5 @@
+credential: Sensitive = "synthetic-credential"
+saved = credential
+credential = "public event"
+logger.info(credential)
+logger.warning(saved)

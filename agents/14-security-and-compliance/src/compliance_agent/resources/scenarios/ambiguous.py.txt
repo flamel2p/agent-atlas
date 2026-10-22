@@ -1,0 +1,2 @@
+payload: Unclassified = "synthetic-external-value"
+logger.info(payload, unknown_reference)

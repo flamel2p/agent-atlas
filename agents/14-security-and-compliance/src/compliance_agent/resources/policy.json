@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "policy_id": "local-sensitive-log",
+  "version": "1.0.0",
+  "rule_id": "LSL001",
+  "scope": "Synthetic straight-line Python snippets with labeled values and modeled logger calls."
+}
