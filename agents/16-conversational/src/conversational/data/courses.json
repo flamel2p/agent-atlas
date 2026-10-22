@@ -1,0 +1,5 @@
+[
+  {"id":"python","title":"Python Foundations","hours":6,"prerequisites":"No programming experience required.","description":"Practice variables, functions, and small command-line programs.","aliases":["python foundations","python"]},
+  {"id":"workflows","title":"Workflow Automation","hours":8,"prerequisites":"Basic programming and JSON familiarity.","description":"Connect synthetic events, validation steps, and repeatable tasks.","aliases":["workflow automation","workflows","automation"]},
+  {"id":"agents","title":"Agent Design","hours":10,"prerequisites":"Python Foundations or equivalent Python experience.","description":"Design bounded decisions, tool authority, and observable stopping rules.","aliases":["agent design","agents","agent"]}
+]
