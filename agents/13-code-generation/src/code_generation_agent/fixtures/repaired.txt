@@ -1,0 +1,7 @@
+def shipping_fee(weight_kg, subtotal_rm):
+    fee = 8
+    if weight_kg > 2:
+        fee = fee + (weight_kg - 2) * 3
+    if subtotal_rm > 100:
+        fee = fee - 5
+    return fee

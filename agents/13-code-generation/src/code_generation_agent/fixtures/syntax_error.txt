@@ -1,0 +1,2 @@
+def shipping_fee(weight_kg, subtotal_rm)
+    return 8
