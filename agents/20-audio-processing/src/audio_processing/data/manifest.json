@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "fixtures": [
+    {
+      "fixture_id": "complaint",
+      "filename": "complaint.wav",
+      "sha256": "a4e64c34871c3053c8eeccbbd780a0a7da4ae0cae2a71cf514ab160996856ddc",
+      "frame_count": 48000,
+      "author_declared_language": "en",
+      "source_kind": "synthetic_tones",
+      "segments": [
+        {
+          "start_frame": 0,
+          "end_frame": 24000,
+          "text": "Um, my parcel is late."
+        },
+        {
+          "start_frame": 24000,
+          "end_frame": 48000,
+          "text": "Uh, please check its status."
+        }
+      ]
+    },
+    {
+      "fixture_id": "silence",
+      "filename": "silence.wav",
+      "sha256": "20eaebffe1816e0ffa6f7f854f5ef4ea80d5349faaf0ce1fec1b713e7fde58fa",
+      "frame_count": 32000,
+      "author_declared_language": "en",
+      "source_kind": "synthetic_tones",
+      "segments": []
+    }
+  ]
+}
