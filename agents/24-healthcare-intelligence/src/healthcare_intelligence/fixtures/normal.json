@@ -1,0 +1,14 @@
+{
+  "schema_version": "synthetic-1",
+  "as_of": "2026-10-23T00:00:00Z",
+  "priors": {"amber-pattern": 0.5, "violet-pattern": 0.3, "teal-pattern": 0.2},
+  "observations": [
+    {"id": "obs-glimmer", "signal": "glimmer", "value": 750, "unit": "milli_ticks", "observed_at": "2026-10-22T23:00:00Z"},
+    {"id": "obs-ripple", "signal": "ripple", "value": 0.25, "unit": "ticks", "observed_at": "2026-10-22T23:00:00Z"}
+  ],
+  "knowledge": [
+    {"id": "know-glimmer", "signal": "glimmer", "band": "high", "source": "toy-almanac", "version": "v-one", "retrieved_at": "2026-10-20T00:00:00Z", "likelihoods": {"amber-pattern": 0.8, "violet-pattern": 0.2, "teal-pattern": 0.1}},
+    {"id": "know-ripple", "signal": "ripple", "band": "low", "source": "toy-atlas", "version": "v-two", "retrieved_at": "2026-10-20T00:00:00Z", "likelihoods": {"amber-pattern": 0.5, "violet-pattern": 0.25, "teal-pattern": 0.75}}
+  ],
+  "review": "pending"
+}
