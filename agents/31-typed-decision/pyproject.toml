@@ -1,0 +1,16 @@
+[build-system]
+requires = ["hatchling==1.32.4"]
+build-backend = "hatchling.build"
+
+[project]
+name = "atlas-typed-decision"
+version = "0.1.0"
+description = "Strict synthetic categorical decision mechanics, with no live inference"
+requires-python = ">=3.14,<3.15"
+dependencies = []
+
+[project.scripts]
+typed-decision = "typed_decision.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/typed_decision"]

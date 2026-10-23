@@ -1,0 +1,6 @@
+{
+  "request_id": "synthetic-001",
+  "state": "Synthetic message: Please send the product brochure for the demo kiosk.",
+  "question": "Which synthetic topic does this message illustrate?",
+  "labels": ["information", "scheduling", "other"]
+}
