@@ -1,0 +1,3 @@
+find_customer: Find a customer by email.
+list_invoices: List one page of their invoices.
+inspect_invoice: Inspect one invoice.

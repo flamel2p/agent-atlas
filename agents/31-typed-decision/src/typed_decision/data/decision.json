@@ -1,0 +1,16 @@
+{
+  "request": {
+    "request_id": "synthetic-001",
+    "state": "Synthetic message: Please send the product brochure for the demo kiosk.",
+    "question": "Which synthetic topic does this message illustrate?",
+    "labels": ["information", "scheduling", "other"]
+  },
+  "behavior": "return",
+  "response": {
+    "backend": "fixed-fixture-v1",
+    "mode": "fixture",
+    "provenance": "synthetic-hand-authored;not-model-probabilities",
+    "selection": "information",
+    "probabilities": {"information": 0.9, "scheduling": 0.06, "other": 0.04}
+  }
+}

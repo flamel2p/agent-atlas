@@ -1,0 +1,100 @@
+{
+  "problem_id": "bounded-queue-v1",
+  "max_rounds": 2,
+  "review_rounds": [
+    {
+      "number": 1,
+      "critiques": [
+        {
+          "id": "r1-domain-c-pedagogy",
+          "reviewer_id": "domain",
+          "criterion_id": "c-pedagogy",
+          "score": 9,
+          "reason": "Original domain review of c-pedagogy."
+        },
+        {
+          "id": "r1-assessment-c-pedagogy",
+          "reviewer_id": "assessment",
+          "criterion_id": "c-pedagogy",
+          "score": 2,
+          "reason": "Original assessment review of c-pedagogy."
+        },
+        {
+          "id": "r1-pedagogy-c-domain",
+          "reviewer_id": "pedagogy",
+          "criterion_id": "c-domain",
+          "score": 9,
+          "reason": "Original pedagogy review of c-domain."
+        },
+        {
+          "id": "r1-assessment-c-domain",
+          "reviewer_id": "assessment",
+          "criterion_id": "c-domain",
+          "score": 8,
+          "reason": "Original assessment review of c-domain."
+        },
+        {
+          "id": "r1-pedagogy-c-assessment",
+          "reviewer_id": "pedagogy",
+          "criterion_id": "c-assessment",
+          "score": 3,
+          "reason": "Original pedagogy review of c-assessment."
+        },
+        {
+          "id": "r1-domain-c-assessment",
+          "reviewer_id": "domain",
+          "criterion_id": "c-assessment",
+          "score": 4,
+          "reason": "Original domain review of c-assessment."
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "critiques": [
+        {
+          "id": "r2-domain-c-pedagogy",
+          "reviewer_id": "domain",
+          "criterion_id": "c-pedagogy",
+          "score": 9,
+          "reason": "Original domain review of c-pedagogy."
+        },
+        {
+          "id": "r2-assessment-c-pedagogy",
+          "reviewer_id": "assessment",
+          "criterion_id": "c-pedagogy",
+          "score": 2,
+          "reason": "Original assessment review of c-pedagogy."
+        },
+        {
+          "id": "r2-pedagogy-c-domain",
+          "reviewer_id": "pedagogy",
+          "criterion_id": "c-domain",
+          "score": 9,
+          "reason": "Original pedagogy review of c-domain."
+        },
+        {
+          "id": "r2-assessment-c-domain",
+          "reviewer_id": "assessment",
+          "criterion_id": "c-domain",
+          "score": 8,
+          "reason": "Original assessment review of c-domain."
+        },
+        {
+          "id": "r2-pedagogy-c-assessment",
+          "reviewer_id": "pedagogy",
+          "criterion_id": "c-assessment",
+          "score": 3,
+          "reason": "Original pedagogy review of c-assessment."
+        },
+        {
+          "id": "r2-domain-c-assessment",
+          "reviewer_id": "domain",
+          "criterion_id": "c-assessment",
+          "score": 4,
+          "reason": "Original domain review of c-assessment."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+[build-system]
+requires = ["hatchling==1.32.4"]
+build-backend = "hatchling.build"
+
+[project]
+name = "atlas-financial-advisory"
+version = "0.1.0"
+description = "Bounded fictional portfolio analysis and simulated host policy"
+requires-python = ">=3.14,<3.15"
+dependencies = []
+
+[project.scripts]
+financial-advisory = "financial_advisory.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/financial_advisory"]

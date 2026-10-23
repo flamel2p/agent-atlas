@@ -1,0 +1,16 @@
+[build-system]
+requires = ["hatchling==1.32.4"]
+build-backend = "hatchling.build"
+
+[project]
+name = "atlas-legal-intelligence"
+version = "0.1.0"
+description = "Bounded fictional legal memo verification learning demo"
+requires-python = ">=3.14,<3.15"
+dependencies = []
+
+[project.scripts]
+legal-intelligence = "legal_intelligence.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/legal_intelligence"]

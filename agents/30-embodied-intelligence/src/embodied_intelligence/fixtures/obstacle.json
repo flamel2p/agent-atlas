@@ -1,0 +1,32 @@
+{
+  "state": {
+    "position": 0,
+    "velocity": 0,
+    "battery": 30,
+    "obstacles": [
+      20
+    ],
+    "version": 0,
+    "emergency_stop": false
+  },
+  "goal": 7,
+  "plans": [
+    [
+      {
+        "action_id": "blocked",
+        "expected_version": 1,
+        "velocity": 3
+      }
+    ]
+  ],
+  "events": [
+    {
+      "tick": 0,
+      "kind": "obstacles",
+      "obstacles": [
+        2
+      ]
+    }
+  ],
+  "max_ticks": 20
+}

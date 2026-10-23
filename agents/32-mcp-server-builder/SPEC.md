@@ -1,8 +1,8 @@
 # MCP Server Builder Agent specification
 
 Slug: 32-mcp-server-builder
-Status: planned
-Runtime: Python (uv CLI; planned)
+Status: demo-ready
+Runtime: Python 3.14 (uv CLI)
 Library ID: 32 (project extension; not a book reference ID)
 
 ## Problem and scope
@@ -13,7 +13,7 @@ The learning objective is agent-assisted interface design with executable author
 
 The first demo uses an original synthetic customer-and-invoice service. The request is to find a customer, list that customer's invoices, and inspect an invoice. Three approved GET operations support those tasks. The fixture also contains an unrelated read operation and a payment-writing operation to demonstrate exclusions. Each exposed tool maps to exactly one upstream operation. No automatic multi-tool workflow is generated.
 
-Selected MVP boundaries are one local OpenAPI JSON document, up to three curated read-only tools, a standalone Python server, and stdio transport. Source-code ingestion, web crawling, write operations, custom authentication flows, remote MCP hosting, client installation, and deployment are deferred. Planning this case does not implement any of them.
+Selected MVP boundaries are one local OpenAPI JSON document, up to three curated read-only tools, a standalone Python server, and stdio transport. Source-code ingestion, web crawling, write operations, custom authentication flows, remote MCP hosting, client installation, and deployment are deferred. Those extensions are not implemented by this case.
 
 ## Evidence and decisions
 
@@ -32,13 +32,13 @@ Official sources inspected on 2026-10-21:
 
 **Inference:** copying OpenAPI schemas is insufficient to build a correct adapter. HTTP serialization, permission, errors, and protocol behavior need their own checks. A passing synthetic fixture suite does not prove that a real service matches its OpenAPI document.
 
-**Open implementation choices:** exact Python and dependency pins, model provider and identifier, and the concrete process/network isolation mechanism. [PLAN.md](PLAN.md) makes their resolution an implementation gate. No real target service or client application has been selected.
+**Selected implementation choices (2026-10-23):** Python 3.14, official `mcp==2.3.0`, `httpx==0.28.1`, `jsonschema==4.26.0`, and `pytest==9.0.2`, with independent builder and server locks. macOS `sandbox-exec` restricts generated subprocess network access to the synthetic fixture port; it is not filesystem isolation. One opt-in OpenAI Responses adapter uses `gpt-6-luna`, strict `text.format` JSON Schema, `store: false`, no retries, and bounded streamed output. Its tests use `httpx.MockTransport`; no live model has been called. No real target service or target client application has been selected.
 
 ## Inputs and outputs
 
 ### Build input
 
-The proposed `BuildRequest` contains paths to `openapi.json`, a UTF-8 task brief, a service policy, a verification fixture set, an explicit planner mode, and a new output directory under this case's `artifacts/`. Snapshot and hash these inputs before planning. Inputs must be regular files within the case input root, with no symlink escape. Reject duplicate JSON keys, malformed data, unknown policy fields, and exceeded bounds. Fixture sets contain declarative synthetic requests and expected responses only; they cannot supply executable tests or commands.
+The implemented `BuildRequest` contains paths to `openapi.json`, a UTF-8 task brief, a service policy, a verification fixture set, an explicit planner mode, and a new output directory under this case's `artifacts/`. Snapshot and hash these inputs before planning. Inputs must be regular files within the case `fixtures/` input root, with no symlink escape. Reject duplicate JSON keys, malformed data, unknown policy fields, and exceeded bounds. Fixture sets contain declarative synthetic requests, expected responses, and independently authored expected input/output schemas for each tool; they cannot supply executable tests or commands.
 
 The task brief identifies required tasks and may name required operations. It cannot authorize tools. The service policy supplies an explicit operation allowlist, required selections where applicable, approved destination, credential environment-variable name when needed, and execution limits. A GET method is only a syntax restriction; the operator must attest that each allowed operation is appropriate for read-only use.
 
@@ -57,7 +57,7 @@ The first implementation accepts `openapi: 3.1.1` JSON only. Other versions, inc
 | Tool arguments | Derive separate `path` and `query` object properties, preserving upstream names and requiredness. Reject unknown fields and type coercion. No aliases or model-authored transformations. |
 | Schemas | Explicit single `type`; object, array, string, integer, number, boolean, or null. Support `properties`, `required`, `items`, `enum`, numeric minimum/maximum, string length, and array length bounds. Objects must explicitly set `additionalProperties: false`. Preserve optional properties; do not inject defaults. |
 | Schema exclusions | No unions/composition, recursive schemas, custom dialects, `format`, `pattern`, or arbitrary properties. Validation keywords outside the declared subset reject the affected operation. `title` and `description` remain inert metadata. |
-| References | Acyclic same-document JSON Pointers under `components/schemas` only. Reject external references without fetching them. Resolve with count, expansion-size, and depth limits. |
+| References | Acyclic same-document JSON Pointers under `components/schemas` only. Reject external references without fetching them. Path Item and Response Object references are unsupported, including local references. Resolve schema references with count, expansion-size, and depth limits. |
 | Authentication | No authentication, or one effective HTTP bearer scheme with a token supplied through a host-named environment variable. Resolve root security and operation overrides, including an explicit empty override. Reject OR/AND combinations, OAuth flows, cookies, query API keys, and ambiguous schemes. |
 | Destinations | The trusted policy selects one origin and fixed base path. Root `servers` must match that selection; reject variables and path/operation server overrides. Documents and tool arguments cannot redirect requests. |
 | Pagination | An explicit scalar page/cursor parameter may be exposed when supported by the source. Each call retrieves one page. No automatic pagination or completeness claim. |
@@ -79,7 +79,7 @@ The server's runtime manifest is the single source for tool schemas and dispatch
 
 ## Architecture and state
 
-Proposed flow:
+Implemented flow:
 
 ```mermaid
 flowchart LR
@@ -101,7 +101,7 @@ Five case-local ownership areas are sufficient:
 | `compiler.py` plus `templates/` | Policy binding, derived manifest, fixed generated runtime, safe data serialization, and package contents. |
 | `verification.py` | Fixed verification commands, independent fixture expectations, subprocess lifecycle, and evidence report. |
 
-These filenames are planned, not existing imports. State lasts for one build or one generated-server tool call. No persistent memory, learning, shared service cache, background job, or cross-case runtime is required. Concurrent builds use separate host-created run directories and never overwrite each other's files.
+These modules are implemented in `src/mcp_builder/`; `runtime.py` and `check_server.py` are copied unchanged into the generated server. State lasts for one build or one generated-server tool call. No persistent memory, learning, shared service cache, background job, or cross-case runtime is required. Concurrent builds use separate host-created run directories and never overwrite each other's files.
 
 The generated server copies the small runtime it needs into its package. It imports neither the builder nor sibling cases. The MCP SDK handles protocol framing and version semantics. Host-owned runtime code validates tool arguments, serializes one approved HTTP request, validates the response, and returns structured content plus its text representation.
 
@@ -130,7 +130,7 @@ Unknown tools and malformed protocol requests produce protocol errors. A valid t
 ## Execution and termination
 
 1. Snapshot and validate inputs, policy, bounds, and fixture availability. Build the eligible operation catalogue and coverage report.
-2. Make one fixture or live-model proposal attempt. Record the actual mode. Do not silently fall back from a live failure to replay.
+2. Make one fixture, mocked-provider, or explicitly selected live-model proposal attempt. Record the actual mode. Do not silently fall back from a live failure to replay.
 3. Bind the proposal to supported operations and host policy. Reject unknown/forbidden selections, duplicate names, invalid descriptions, or schema changes. Return `needs_input` if required tasks remain uncovered.
 4. Render fixed templates into a new private staging directory under `artifacts/`. Refuse an existing destination and any path/symlink escape.
 5. Check and execute the staged server through a real MCP client against the fixture service. Checks cover the exact generated bytes, not merely the builder's functions. Failures stop; neither the model nor verifier can rewrite tests or expand permissions.
@@ -152,7 +152,7 @@ Apply the remaining global deadline to every stage. Size caps apply while readin
 
 ## Acceptance criteria
 
-These are future checks. None has been executed for Agent 32.
+The fixture and mocked-provider checks are implemented in `tests/test_contract.py` and the generated `check_server.py`. README records executed commands and exact scope. Independent review and fix verification passed for the selected fixture and mocked-provider criteria.
 
 | Criterion | Required evidence |
 | --- | --- |
@@ -172,8 +172,23 @@ These are future checks. None has been executed for Agent 32.
 
 ## Dependencies and open decisions
 
-No executable code, dependency manifest, lockfile, provider configuration, or credentials are added by this plan. The proposed stack is Python, uv, the official MCP Python SDK, a bounded HTTP client, JSON Schema validation, and pytest. Recheck releases and lock exact versions at implementation. Verify the SDK's observed 2026-07-28 behavior before depending on it.
+The implementation and both exact dependency locks are case-local. Python 3.14.8 and official SDK 2.3.0 were exercised through actual `server/discover`, negotiation of `2026-07-28`, `tools/list`, and `tools/call`. The emitted server uses only its own runtime, manifest, fixed fixture gate, and dependency lock.
 
-Resolve the provider-specific request contract and process/network isolation mechanism before implementing those paths. Prefer one provider adapter and no orchestration framework for this bounded flow. Keep deterministic replay available without provider credentials. If a future real service lacks a usable supported OpenAPI contract, report that gap instead of inventing endpoints.
+The selected network profile is `(version 1)(allow default)(deny network*)(allow network-outbound (remote ip "localhost:19832"))`. The verifier derives the allowed port from its validated loopback fixture profile and proves a second live loopback listener is denied with EPERM. Unsupported platforms or nested-sandbox denial fail visibly. The official Client receives bounded host-owned pipes so its subprocess remains inside the verifier kill group. Deterministic replay requires no provider credentials. If a future real service lacks a usable supported OpenAPI contract, report that gap instead of inventing endpoints.
 
-The first necessary implementation action is the fixture and SDK/isolation feasibility gate in [PLAN.md](PLAN.md#implementation-sequence). A real target service, broader OpenAPI coverage, older MCP client compatibility, write permissions, OAuth, and remote transport each require their own scoped contract changes.
+The feasibility gate, implementation, case tests and independent installations have local evidence; [PLAN.md](PLAN.md#implementation-reconciliation) records selected details. Independent review and fix reconciliation are complete for the selected local scope. A real target service, broader OpenAPI coverage, older MCP client compatibility, write permissions, OAuth, and remote transport each require their own scoped contract changes.
+
+
+## Selected operational details
+
+- The brief is UTF-8 text with one required `task_id: description` per nonempty line (1–20 distinct tasks). The planner must account for every task through a selected operation or an explicit uncovered entry. Associations need semantic human review; schema validity is not that review.
+- The first fixed verification service is `http://127.0.0.1:19832/api`. The port must be free; simultaneous builds targeting this same service fail rather than silently choosing a new destination. Staging and publication never overwrite other builds.
+- Parsed JSON nesting is capped at 64; malformed schema keyword values are normalized to rejected inputs. A bound manifest is capped at 64 KiB. Runtime results accept JSON with identity content encoding only; other content encodings fail before decompression. Decoded identity body bytes remain capped at 256 KiB. This avoids compressed expansion bypassing the response-memory bound.
+- Publication uses macOS `renamex_np(RENAME_EXCL)` for atomic no-replace rename. Missing atomic publication or network-isolation support fails visibly. No Linux/Windows sandbox compatibility is claimed.
+- The builder returns terminal JSON for missing/malformed input and missing explicitly selected provider credentials. Broken stdout/help streams exit with failure; no success result is claimed after a failed write.
+- Public CLI use is `uv run --locked mcp-builder build --out artifacts/<fresh-name>`. Dependency provisioning is explicit setup, never part of a build. `qualify_isolation.py` separately copies and installs the builder and generated package to prove case independence.
+- The adapter follows the official [Responses request contract](https://developers.openai.com/api/reference/resources/responses/methods/create), [structured output guide](https://developers.openai.com/api/docs/guides/structured-outputs), [GPT-6 Luna model page](https://developers.openai.com/api/docs/models/gpt-6-luna), and [conversation-state storage behavior](https://developers.openai.com/api/docs/guides/conversation-state). Live availability and semantic performance remain unverified.
+
+## Independent review reconciliation
+
+The generated-artifact gate compares actual SDK-discovered input and output schemas with the independent `tool_schemas` fixture table. The runtime manifest remains the sole dispatch contract; fixture expectations are test data and cannot change runtime mappings. Altering either advertised schema prevents publication. Normalized input paths must stay inside `fixtures/`. Provider/source container shapes and references outside the supported schema-reference location reject before dependent behavior. These controls were regression-tested and independently rechecked.

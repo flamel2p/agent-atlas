@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "policy_version": "synthetic-v1",
+  "synthetic": true,
+  "action": {
+    "action_id": "report-forbidden",
+    "kind": "export_records",
+    "recipient": "external",
+    "fields": ["aggregate_count", "synthetic_email"]
+  },
+  "groups": [
+    {"group_id": "group-a", "eligible": 100, "selected": 50},
+    {"group_id": "group-b", "eligible": 100, "selected": 40}
+  ]
+}

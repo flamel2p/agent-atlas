@@ -1,0 +1,59 @@
+{
+  "now": "2026-10-23T12:00:00Z",
+  "parameters": {
+    "guess": 0.2,
+    "slip": 0.1,
+    "learn": 0.1
+  },
+  "graph": [
+    {
+      "objective": "count",
+      "prerequisites": []
+    },
+    {
+      "objective": "add",
+      "prerequisites": [
+        "count"
+      ]
+    },
+    {
+      "objective": "multiply",
+      "prerequisites": [
+        "add"
+      ]
+    }
+  ],
+  "state": [
+    {
+      "objective": "count",
+      "mastery": 0.2,
+      "attempts": 0,
+      "failures": 0,
+      "last_evidence": null,
+      "due_at": null
+    },
+    {
+      "objective": "add",
+      "mastery": 0.2,
+      "attempts": 0,
+      "failures": 0,
+      "last_evidence": null,
+      "due_at": null
+    },
+    {
+      "objective": "multiply",
+      "mastery": 0.2,
+      "attempts": 0,
+      "failures": 0,
+      "last_evidence": null,
+      "due_at": null
+    }
+  ],
+  "answers": [
+    {
+      "objective": "count",
+      "answer": null,
+      "observed_at": "2026-10-15T12:00:00Z"
+    }
+  ]
+}

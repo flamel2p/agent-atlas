@@ -1,0 +1,16 @@
+[build-system]
+requires = ["hatchling==1.32.4"]
+build-backend = "hatchling.build"
+
+[project]
+name = "atlas-education-intelligence"
+version = "0.1.0"
+description = "Bounded synthetic Bayesian knowledge tracing demo"
+requires-python = ">=3.14,<3.15"
+dependencies = []
+
+[project.scripts]
+education-demo = "education_intelligence.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/education_intelligence"]
