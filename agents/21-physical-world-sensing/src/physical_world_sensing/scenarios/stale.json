@@ -1,0 +1,55 @@
+{
+  "zones": [
+    {
+      "id": "office",
+      "target_min_c": 20,
+      "target_max_c": 24,
+      "co2_limit_ppm": 1000,
+      "occupied_start_hour": 8,
+      "occupied_end_hour": 18
+    }
+  ],
+  "sensors": [
+    {
+      "id": "temp",
+      "zone_id": "office",
+      "kind": "temperature"
+    },
+    {
+      "id": "co2",
+      "zone_id": "office",
+      "kind": "co2"
+    },
+    {
+      "id": "occupancy",
+      "zone_id": "office",
+      "kind": "occupancy"
+    }
+  ],
+  "readings": [
+    {
+      "id": "old_temp",
+      "sensor_id": "temp",
+      "observed_at": "2026-10-23T08:54:59Z",
+      "received_at": "2026-10-23T08:54:59Z",
+      "value": 27
+    },
+    {
+      "id": "fresh_co2",
+      "sensor_id": "co2",
+      "observed_at": "2026-10-23T09:00:00Z",
+      "received_at": "2026-10-23T09:00:00Z",
+      "value": 1200
+    },
+    {
+      "id": "empty",
+      "sensor_id": "occupancy",
+      "observed_at": "2026-10-23T09:00:00Z",
+      "received_at": "2026-10-23T09:00:00Z",
+      "value": 0
+    }
+  ],
+  "ticks": [
+    "2026-10-23T09:00:00Z"
+  ]
+}

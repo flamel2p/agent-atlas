@@ -1,0 +1,87 @@
+{
+  "zones": [
+    {
+      "id": "office",
+      "target_min_c": 20,
+      "target_max_c": 24,
+      "co2_limit_ppm": 1000,
+      "occupied_start_hour": 8,
+      "occupied_end_hour": 18
+    }
+  ],
+  "sensors": [
+    {
+      "id": "temp",
+      "zone_id": "office",
+      "kind": "temperature"
+    },
+    {
+      "id": "co2",
+      "zone_id": "office",
+      "kind": "co2"
+    },
+    {
+      "id": "occupancy",
+      "zone_id": "office",
+      "kind": "occupancy"
+    }
+  ],
+  "readings": [
+    {
+      "id": "plus_one",
+      "sensor_id": "temp",
+      "observed_at": "2026-10-23T07:55:00Z",
+      "received_at": "2026-10-23T07:55:00Z",
+      "value": 23
+    },
+    {
+      "id": "co2_equal",
+      "sensor_id": "co2",
+      "observed_at": "2026-10-23T07:55:00Z",
+      "received_at": "2026-10-23T07:55:00Z",
+      "value": 1000
+    },
+    {
+      "id": "before_open",
+      "sensor_id": "occupancy",
+      "observed_at": "2026-10-23T07:59:59Z",
+      "received_at": "2026-10-23T07:59:59Z",
+      "value": 1
+    },
+    {
+      "id": "at_open",
+      "sensor_id": "occupancy",
+      "observed_at": "2026-10-23T08:00:00Z",
+      "received_at": "2026-10-23T08:00:00Z",
+      "value": 1
+    },
+    {
+      "id": "minus_one",
+      "sensor_id": "temp",
+      "observed_at": "2026-10-23T08:00:01Z",
+      "received_at": "2026-10-23T08:00:01Z",
+      "value": 21
+    },
+    {
+      "id": "before_close",
+      "sensor_id": "occupancy",
+      "observed_at": "2026-10-23T17:59:59Z",
+      "received_at": "2026-10-23T17:59:59Z",
+      "value": 1
+    },
+    {
+      "id": "at_close",
+      "sensor_id": "occupancy",
+      "observed_at": "2026-10-23T18:00:00Z",
+      "received_at": "2026-10-23T18:00:00Z",
+      "value": 1
+    }
+  ],
+  "ticks": [
+    "2026-10-23T07:59:59Z",
+    "2026-10-23T08:00:00Z",
+    "2026-10-23T08:00:01Z",
+    "2026-10-23T17:59:59Z",
+    "2026-10-23T18:00:00Z"
+  ]
+}

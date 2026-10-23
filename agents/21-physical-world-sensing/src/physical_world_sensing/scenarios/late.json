@@ -1,0 +1,71 @@
+{
+  "zones": [
+    {
+      "id": "office",
+      "target_min_c": 20,
+      "target_max_c": 24,
+      "co2_limit_ppm": 1000,
+      "occupied_start_hour": 8,
+      "occupied_end_hour": 18
+    }
+  ],
+  "sensors": [
+    {
+      "id": "temp",
+      "zone_id": "office",
+      "kind": "temperature"
+    },
+    {
+      "id": "co2",
+      "zone_id": "office",
+      "kind": "co2"
+    },
+    {
+      "id": "occupancy",
+      "zone_id": "office",
+      "kind": "occupancy"
+    }
+  ],
+  "readings": [
+    {
+      "id": "latest_temp",
+      "sensor_id": "temp",
+      "observed_at": "2026-10-23T08:59:00Z",
+      "received_at": "2026-10-23T08:59:00Z",
+      "value": 24
+    },
+    {
+      "id": "old_extreme",
+      "sensor_id": "temp",
+      "observed_at": "2026-10-23T08:58:00Z",
+      "received_at": "2026-10-23T09:01:00Z",
+      "value": -40
+    },
+    {
+      "id": "future_temp",
+      "sensor_id": "temp",
+      "observed_at": "2026-10-23T09:02:00Z",
+      "received_at": "2026-10-23T09:03:00Z",
+      "value": 28
+    },
+    {
+      "id": "co2_ok",
+      "sensor_id": "co2",
+      "observed_at": "2026-10-23T09:00:00Z",
+      "received_at": "2026-10-23T09:00:00Z",
+      "value": 1000
+    },
+    {
+      "id": "present",
+      "sensor_id": "occupancy",
+      "observed_at": "2026-10-23T09:00:00Z",
+      "received_at": "2026-10-23T09:00:00Z",
+      "value": 1
+    }
+  ],
+  "ticks": [
+    "2026-10-23T09:00:00Z",
+    "2026-10-23T09:01:00Z",
+    "2026-10-23T09:03:00Z"
+  ]
+}

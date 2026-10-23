@@ -1,0 +1,16 @@
+[build-system]
+requires = ["hatchling==1.32.4"]
+build-backend = "hatchling.build"
+
+[project]
+name = "physical-world-sensing"
+version = "0.1.0"
+description = "Bounded synthetic sensor replay with explained simulated control"
+requires-python = ">=3.14,<3.15"
+dependencies = []
+
+[project.scripts]
+physical-world-sensing = "physical_world_sensing.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/physical_world_sensing"]
