@@ -1,0 +1,12 @@
+{
+  "topic_weights": {
+    "graphics": 9
+  },
+  "max_duration_minutes": 30,
+  "max_difficulty": "intermediate",
+  "completed_skills": [
+    "python-basics"
+  ],
+  "excluded_exercise_ids": [],
+  "limit": 3
+}

@@ -1,0 +1,227 @@
+{
+  "version": "synthetic-v1",
+  "topics": [
+    "python",
+    "testing",
+    "sql",
+    "api",
+    "validation",
+    "files",
+    "cli",
+    "algorithms",
+    "documentation",
+    "async",
+    "containers",
+    "networking",
+    "data-viz",
+    "graphics"
+  ],
+  "skills": [
+    "python-basics",
+    "testing-basics",
+    "sql-basics",
+    "http-basics",
+    "async-basics",
+    "shell-basics"
+  ],
+  "exercises": [
+    {
+      "id": "parse-records",
+      "title": "Validate a small record list",
+      "topics": [
+        "python",
+        "validation"
+      ],
+      "duration_minutes": 20,
+      "difficulty": "beginner",
+      "required_skills": []
+    },
+    {
+      "id": "unit-tests",
+      "title": "Test a pricing function",
+      "topics": [
+        "python",
+        "testing"
+      ],
+      "duration_minutes": 25,
+      "difficulty": "beginner",
+      "required_skills": [
+        "python-basics"
+      ]
+    },
+    {
+      "id": "cli-options",
+      "title": "Parse command options",
+      "topics": [
+        "python",
+        "cli"
+      ],
+      "duration_minutes": 25,
+      "difficulty": "intermediate",
+      "required_skills": [
+        "python-basics"
+      ]
+    },
+    {
+      "id": "pytest-fixtures",
+      "title": "Isolate shared test setup",
+      "topics": [
+        "python",
+        "testing"
+      ],
+      "duration_minutes": 30,
+      "difficulty": "intermediate",
+      "required_skills": [
+        "python-basics",
+        "testing-basics"
+      ]
+    },
+    {
+      "id": "sqlite-queries",
+      "title": "Query a local event table",
+      "topics": [
+        "python",
+        "sql"
+      ],
+      "duration_minutes": 30,
+      "difficulty": "intermediate",
+      "required_skills": [
+        "python-basics",
+        "sql-basics"
+      ]
+    },
+    {
+      "id": "sqlite-intro",
+      "title": "Select rows from a sample table",
+      "topics": [
+        "sql"
+      ],
+      "duration_minutes": 20,
+      "difficulty": "beginner",
+      "required_skills": []
+    },
+    {
+      "id": "http-contract",
+      "title": "Check an HTTP response contract",
+      "topics": [
+        "api",
+        "testing"
+      ],
+      "duration_minutes": 35,
+      "difficulty": "intermediate",
+      "required_skills": [
+        "http-basics"
+      ]
+    },
+    {
+      "id": "async-batch",
+      "title": "Bound an asynchronous work queue",
+      "topics": [
+        "python",
+        "async"
+      ],
+      "duration_minutes": 45,
+      "difficulty": "advanced",
+      "required_skills": [
+        "python-basics",
+        "async-basics"
+      ]
+    },
+    {
+      "id": "read-files",
+      "title": "Summarize lines in a text file",
+      "topics": [
+        "python",
+        "files"
+      ],
+      "duration_minutes": 15,
+      "difficulty": "beginner",
+      "required_skills": []
+    },
+    {
+      "id": "safe-json",
+      "title": "Reject invalid JSON records",
+      "topics": [
+        "python",
+        "validation",
+        "testing"
+      ],
+      "duration_minutes": 30,
+      "difficulty": "intermediate",
+      "required_skills": [
+        "python-basics"
+      ]
+    },
+    {
+      "id": "write-guide",
+      "title": "Write a command usage guide",
+      "topics": [
+        "documentation"
+      ],
+      "duration_minutes": 15,
+      "difficulty": "beginner",
+      "required_skills": []
+    },
+    {
+      "id": "cli-help",
+      "title": "Improve command help text",
+      "topics": [
+        "cli",
+        "documentation"
+      ],
+      "duration_minutes": 15,
+      "difficulty": "beginner",
+      "required_skills": []
+    },
+    {
+      "id": "graph-search",
+      "title": "Find a path in a small graph",
+      "topics": [
+        "algorithms",
+        "python"
+      ],
+      "duration_minutes": 40,
+      "difficulty": "advanced",
+      "required_skills": [
+        "python-basics"
+      ]
+    },
+    {
+      "id": "docker-health",
+      "title": "Inspect container health locally",
+      "topics": [
+        "containers",
+        "networking"
+      ],
+      "duration_minutes": 30,
+      "difficulty": "intermediate",
+      "required_skills": [
+        "shell-basics"
+      ]
+    },
+    {
+      "id": "http-intro",
+      "title": "Read a sample HTTP exchange",
+      "topics": [
+        "api",
+        "networking"
+      ],
+      "duration_minutes": 20,
+      "difficulty": "beginner",
+      "required_skills": []
+    },
+    {
+      "id": "table-summary",
+      "title": "Summarize a small data table",
+      "topics": [
+        "python",
+        "data-viz"
+      ],
+      "duration_minutes": 30,
+      "difficulty": "intermediate",
+      "required_skills": [
+        "python-basics"
+      ]
+    }
+  ]
+}
