@@ -1,0 +1,148 @@
+{
+  "zones": [
+    {
+      "id": "office",
+      "target_min_c": 20,
+      "target_max_c": 24,
+      "co2_limit_ppm": 1000,
+      "occupied_start_hour": 8,
+      "occupied_end_hour": 18
+    },
+    {
+      "id": "store",
+      "target_min_c": 16,
+      "target_max_c": 20,
+      "co2_limit_ppm": 800,
+      "occupied_start_hour": 8,
+      "occupied_end_hour": 18
+    }
+  ],
+  "sensors": [
+    {
+      "id": "office_t1",
+      "zone_id": "office",
+      "kind": "temperature"
+    },
+    {
+      "id": "office_t2",
+      "zone_id": "office",
+      "kind": "temperature"
+    },
+    {
+      "id": "office_c1",
+      "zone_id": "office",
+      "kind": "co2"
+    },
+    {
+      "id": "office_c2",
+      "zone_id": "office",
+      "kind": "co2"
+    },
+    {
+      "id": "office_o1",
+      "zone_id": "office",
+      "kind": "occupancy"
+    },
+    {
+      "id": "store_t1",
+      "zone_id": "store",
+      "kind": "temperature"
+    },
+    {
+      "id": "store_t2",
+      "zone_id": "store",
+      "kind": "temperature"
+    },
+    {
+      "id": "store_c1",
+      "zone_id": "store",
+      "kind": "co2"
+    },
+    {
+      "id": "store_c2",
+      "zone_id": "store",
+      "kind": "co2"
+    },
+    {
+      "id": "store_o1",
+      "zone_id": "store",
+      "kind": "occupancy"
+    }
+  ],
+  "readings": [
+    {
+      "id": "r_office_t1",
+      "sensor_id": "office_t1",
+      "observed_at": "2026-10-23T09:00:00Z",
+      "received_at": "2026-10-23T09:00:00Z",
+      "value": 26
+    },
+    {
+      "id": "r_office_t2",
+      "sensor_id": "office_t2",
+      "observed_at": "2026-10-23T09:00:00Z",
+      "received_at": "2026-10-23T09:00:00Z",
+      "value": 28
+    },
+    {
+      "id": "r_office_c1",
+      "sensor_id": "office_c1",
+      "observed_at": "2026-10-23T09:00:00Z",
+      "received_at": "2026-10-23T09:00:00Z",
+      "value": 1100
+    },
+    {
+      "id": "r_office_c2",
+      "sensor_id": "office_c2",
+      "observed_at": "2026-10-23T09:00:00Z",
+      "received_at": "2026-10-23T09:00:00Z",
+      "value": 1300
+    },
+    {
+      "id": "r_office_o1",
+      "sensor_id": "office_o1",
+      "observed_at": "2026-10-23T09:00:00Z",
+      "received_at": "2026-10-23T09:00:00Z",
+      "value": 1
+    },
+    {
+      "id": "r_store_t1",
+      "sensor_id": "store_t1",
+      "observed_at": "2026-10-23T09:00:00Z",
+      "received_at": "2026-10-23T09:00:00Z",
+      "value": 14
+    },
+    {
+      "id": "r_store_t2",
+      "sensor_id": "store_t2",
+      "observed_at": "2026-10-23T09:00:00Z",
+      "received_at": "2026-10-23T09:00:00Z",
+      "value": 16
+    },
+    {
+      "id": "r_store_c1",
+      "sensor_id": "store_c1",
+      "observed_at": "2026-10-23T09:00:00Z",
+      "received_at": "2026-10-23T09:00:00Z",
+      "value": 600
+    },
+    {
+      "id": "r_store_c2",
+      "sensor_id": "store_c2",
+      "observed_at": "2026-10-23T09:00:00Z",
+      "received_at": "2026-10-23T09:00:00Z",
+      "value": 800
+    },
+    {
+      "id": "r_store_o1",
+      "sensor_id": "store_o1",
+      "observed_at": "2026-10-23T09:00:00Z",
+      "received_at": "2026-10-23T09:00:00Z",
+      "value": 0
+    }
+  ],
+  "ticks": [
+    "2026-10-23T09:00:00Z",
+    "2026-10-23T09:02:00Z"
+  ]
+}
