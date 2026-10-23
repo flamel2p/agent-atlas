@@ -1,0 +1,19 @@
+[build-system]
+requires = ["hatchling==1.32.4"]
+build-backend = "hatchling.build"
+
+[project]
+name = "atlas-embodied-intelligence"
+version = "0.1.0"
+description = "Bounded synthetic one-dimensional cart learning demo"
+requires-python = ">=3.14,<3.15"
+dependencies = []
+
+[project.scripts]
+embodied-cart = "embodied_intelligence.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/embodied_intelligence"]
+
+[tool.hatch.build.targets.sdist]
+include = ["src", "tests", "pyproject.toml", "uv.lock", "README.md", "SPEC.md", "AGENTS.md", "PLAN.md", "qualify.py"]

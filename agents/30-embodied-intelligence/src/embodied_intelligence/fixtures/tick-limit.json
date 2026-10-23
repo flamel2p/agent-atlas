@@ -1,0 +1,119 @@
+{
+  "state": {
+    "position": 0,
+    "velocity": 0,
+    "battery": 30,
+    "obstacles": [
+      20
+    ],
+    "version": 0,
+    "emergency_stop": false
+  },
+  "goal": 7,
+  "plans": [
+    [
+      {
+        "action_id": "wait-0",
+        "expected_version": 0,
+        "velocity": 0
+      },
+      {
+        "action_id": "wait-1",
+        "expected_version": 1,
+        "velocity": 0
+      },
+      {
+        "action_id": "wait-2",
+        "expected_version": 2,
+        "velocity": 0
+      },
+      {
+        "action_id": "wait-3",
+        "expected_version": 3,
+        "velocity": 0
+      },
+      {
+        "action_id": "wait-4",
+        "expected_version": 4,
+        "velocity": 0
+      },
+      {
+        "action_id": "wait-5",
+        "expected_version": 5,
+        "velocity": 0
+      },
+      {
+        "action_id": "wait-6",
+        "expected_version": 6,
+        "velocity": 0
+      },
+      {
+        "action_id": "wait-7",
+        "expected_version": 7,
+        "velocity": 0
+      },
+      {
+        "action_id": "wait-8",
+        "expected_version": 8,
+        "velocity": 0
+      },
+      {
+        "action_id": "wait-9",
+        "expected_version": 9,
+        "velocity": 0
+      },
+      {
+        "action_id": "wait-10",
+        "expected_version": 10,
+        "velocity": 0
+      },
+      {
+        "action_id": "wait-11",
+        "expected_version": 11,
+        "velocity": 0
+      },
+      {
+        "action_id": "wait-12",
+        "expected_version": 12,
+        "velocity": 0
+      },
+      {
+        "action_id": "wait-13",
+        "expected_version": 13,
+        "velocity": 0
+      },
+      {
+        "action_id": "wait-14",
+        "expected_version": 14,
+        "velocity": 0
+      },
+      {
+        "action_id": "wait-15",
+        "expected_version": 15,
+        "velocity": 0
+      },
+      {
+        "action_id": "wait-16",
+        "expected_version": 16,
+        "velocity": 0
+      },
+      {
+        "action_id": "wait-17",
+        "expected_version": 17,
+        "velocity": 0
+      },
+      {
+        "action_id": "wait-18",
+        "expected_version": 18,
+        "velocity": 0
+      },
+      {
+        "action_id": "wait-19",
+        "expected_version": 19,
+        "velocity": 0
+      }
+    ]
+  ],
+  "events": [],
+  "max_ticks": 20
+}

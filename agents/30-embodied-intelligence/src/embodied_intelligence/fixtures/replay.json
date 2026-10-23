@@ -1,0 +1,44 @@
+{
+  "state": {
+    "position": 0,
+    "velocity": 0,
+    "battery": 30,
+    "obstacles": [
+      20
+    ],
+    "version": 0,
+    "emergency_stop": false
+  },
+  "goal": 7,
+  "plans": [
+    [
+      {
+        "action_id": "move-1",
+        "expected_version": 0,
+        "velocity": 3
+      },
+      {
+        "action_id": "move-1",
+        "expected_version": 0,
+        "velocity": 3
+      },
+      {
+        "action_id": "move-2",
+        "expected_version": 1,
+        "velocity": 3
+      },
+      {
+        "action_id": "move-3",
+        "expected_version": 2,
+        "velocity": 1
+      },
+      {
+        "action_id": "stop",
+        "expected_version": 3,
+        "velocity": 0
+      }
+    ]
+  ],
+  "events": [],
+  "max_ticks": 20
+}
