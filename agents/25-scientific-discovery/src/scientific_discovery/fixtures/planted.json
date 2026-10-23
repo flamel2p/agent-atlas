@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "corpus_id": "original_virtual_materials",
+  "topics": [
+    {"id": "aerogel", "label": "Synthetic aerogel factor"},
+    {"id": "binder", "label": "Synthetic binder factor"},
+    {"id": "pulse", "label": "Synthetic pulse factor"}
+  ],
+  "required_sources": ["archive_alpha", "archive_beta"],
+  "sources": [
+    {
+      "id": "archive_alpha",
+      "papers": [
+        {"id": "a_single", "title": "Original virtual aerogel effect", "topics": ["aerogel"], "effect": 4, "evidence": "A virtual aerogel-only arm changed the synthetic response by 4 points.", "citations": []},
+        {"id": "b_single", "title": "Original virtual binder effect", "topics": ["binder"], "effect": 2, "evidence": "A virtual binder-only arm changed the synthetic response by 2 points.", "citations": []},
+        {"id": "ab_pair", "title": "Original virtual aerogel and binder combination", "topics": ["aerogel", "binder"], "effect": 5, "evidence": "The synthetic aerogel-binder combination was already tested at 5 points.", "citations": ["a_single", "b_single"]}
+      ]
+    },
+    {
+      "id": "archive_beta",
+      "papers": [
+        {"id": "p_single", "title": "Original virtual pulse effect", "topics": ["pulse"], "effect": 6, "evidence": "A virtual pulse-only arm changed the synthetic response by 6 points.", "citations": []},
+        {"id": "bp_pair", "title": "Original virtual binder and pulse combination", "topics": ["binder", "pulse"], "effect": 7, "evidence": "The synthetic binder-pulse combination was already tested at 7 points.", "citations": ["b_single", "p_single"]}
+      ]
+    }
+  ],
+  "constraints": {"max_runs": 12, "max_cost": 24, "tolerance": 1},
+  "measurements": [{"pair": ["aerogel", "pulse"], "values": [8, 10, 9]}]
+}

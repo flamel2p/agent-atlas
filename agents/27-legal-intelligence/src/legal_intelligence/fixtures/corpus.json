@@ -1,0 +1,83 @@
+{
+  "snapshot": "alder-brume-2026-10-01",
+  "recorded_at": "2026-10-01T00:00:00Z",
+  "authorities": [
+    {
+      "authority_id": "ALD-101",
+      "version": "v1",
+      "jurisdiction": "ALDER",
+      "authority_rank": 1,
+      "status": "current",
+      "issue": "notice",
+      "rule": "notice_before_pause",
+      "holding": "In this fictional system, give a notice token before pausing a lantern lease.",
+      "provenance": "original-fiction:ALD-101"
+    },
+    {
+      "authority_id": "ALD-102",
+      "version": "v1",
+      "jurisdiction": "ALDER",
+      "authority_rank": 2,
+      "status": "current",
+      "issue": "notice",
+      "rule": "notice_before_pause",
+      "holding": "In this fictional system, give a notice token before pausing a lantern lease.",
+      "provenance": "original-fiction:ALD-102"
+    },
+    {
+      "authority_id": "ALD-099",
+      "version": "v1",
+      "jurisdiction": "ALDER",
+      "authority_rank": 1,
+      "status": "superseded",
+      "issue": "notice",
+      "rule": "notice_before_pause",
+      "holding": "In this fictional system, give a notice token before pausing a lantern lease.",
+      "provenance": "original-fiction:ALD-099"
+    },
+    {
+      "authority_id": "ALD-103",
+      "version": "v1",
+      "jurisdiction": "ALDER",
+      "authority_rank": 1,
+      "status": "unknown",
+      "issue": "notice",
+      "rule": "notice_before_pause",
+      "holding": "In this fictional system, give a notice token before pausing a lantern lease.",
+      "provenance": "original-fiction:ALD-103"
+    },
+    {
+      "authority_id": "ALD-201",
+      "version": "v1",
+      "jurisdiction": "ALDER",
+      "authority_rank": 1,
+      "status": "current",
+      "issue": "export",
+      "rule": "export_opt_in",
+      "holding": "In this fictional system, export of lantern logs requires an opt-in token.",
+      "provenance": "original-fiction:ALD-201"
+    },
+    {
+      "authority_id": "BRM-101",
+      "version": "v1",
+      "jurisdiction": "BRUME",
+      "authority_rank": 1,
+      "status": "current",
+      "issue": "notice",
+      "rule": "notice_before_pause",
+      "holding": "In this fictional system, give a notice token before pausing a lantern lease.",
+      "provenance": "original-fiction:BRM-101"
+    },
+    {
+      "authority_id": "BRM-201",
+      "version": "v1",
+      "jurisdiction": "BRUME",
+      "authority_rank": 2,
+      "status": "superseded",
+      "issue": "export",
+      "rule": "export_opt_in",
+      "holding": "In this fictional system, export of lantern logs requires an opt-in token.",
+      "provenance": "original-fiction:BRM-201"
+    }
+  ]
+}

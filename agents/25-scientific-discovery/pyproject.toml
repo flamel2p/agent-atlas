@@ -1,0 +1,16 @@
+[build-system]
+requires = ["hatchling==1.32.4"]
+build-backend = "hatchling.build"
+
+[project]
+name = "atlas-scientific-discovery"
+version = "0.1.0"
+description = "Bounded synthetic corpus gap, virtual experiment, and prediction feedback demo"
+requires-python = ">=3.14"
+dependencies = []
+
+[project.scripts]
+scientific-discovery = "scientific_discovery.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/scientific_discovery"]
