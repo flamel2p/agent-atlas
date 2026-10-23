@@ -1,0 +1,22 @@
+[build-system]
+requires = ["hatchling==1.32.4"]
+build-backend = "hatchling.build"
+
+[project]
+name = "agent19-vision-language"
+version = "0.1.0"
+description = "Bounded, pixel-grounded questions about synthetic rectangular diagrams"
+readme = "README.md"
+requires-python = ">=3.14,<3.15"
+license = "MIT"
+license-files = ["LICENSE"]
+dependencies = ["Pillow==13.0.0"]
+
+[project.scripts]
+vision-language = "vision_language.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/vision_language"]
+
+[tool.hatch.build.targets.sdist]
+include = ["/src", "/tests", "/scripts", "/*.md", "/LICENSE", "/pyproject.toml", "/uv.lock", "/.python-version"]
