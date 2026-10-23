@@ -1,0 +1,34 @@
+{
+  "tools": [
+    {
+      "operation": "GET /customers",
+      "name": "find_customer",
+      "description": "Find a customer by exact email."
+    },
+    {
+      "operation": "GET /customers/{customer_id}/invoices",
+      "name": "list_customer_invoices",
+      "description": "List one page of invoices for a customer."
+    },
+    {
+      "operation": "GET /invoices/{invoice_id}",
+      "name": "get_invoice",
+      "description": "Inspect one invoice."
+    }
+  ],
+  "tasks": [
+    {
+      "task": "find_customer",
+      "operation": "GET /customers"
+    },
+    {
+      "task": "list_invoices",
+      "operation": "GET /customers/{customer_id}/invoices"
+    },
+    {
+      "task": "inspect_invoice",
+      "operation": "GET /invoices/{invoice_id}"
+    }
+  ],
+  "uncovered": []
+}

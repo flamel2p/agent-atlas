@@ -1,0 +1,15 @@
+{
+  "destination": "http://127.0.0.1:19832/api",
+  "allowed_operations": [
+    "GET /customers",
+    "GET /customers/{customer_id}/invoices",
+    "GET /invoices/{invoice_id}"
+  ],
+  "required_operations": [
+    "GET /customers",
+    "GET /customers/{customer_id}/invoices",
+    "GET /invoices/{invoice_id}"
+  ],
+  "read_only_attested": true,
+  "credential_env": "SYNTHETIC_API_TOKEN"
+}

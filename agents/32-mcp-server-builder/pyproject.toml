@@ -1,0 +1,14 @@
+[project]
+name = "atlas-mcp-builder"
+version = "0.1.0"
+requires-python = ">=3.14,<3.15"
+dependencies = ["mcp==2.3.0", "httpx==0.28.1", "jsonschema==4.26.0"]
+[project.scripts]
+mcp-builder = "mcp_builder.builder:main"
+[dependency-groups]
+dev = ["pytest==9.0.2"]
+[build-system]
+requires = ["hatchling==1.28.0"]
+build-backend = "hatchling.build"
+[tool.hatch.build.targets.wheel]
+packages = ["src/mcp_builder"]
