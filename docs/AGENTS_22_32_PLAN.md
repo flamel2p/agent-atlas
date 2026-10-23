@@ -32,7 +32,7 @@ Blocking work is source grounding, contract selection, and the MCP SDK/isolation
 
 Up to three builders work concurrently, each in one exclusively assigned case directory. The parent alone edits the catalogue and this batch document. Reviewers inspect completed, stable case code. Each implementation unit ends with its own checks before readiness is recorded.
 
-Case 32's local feasibility investigation confirmed that the operating system sandbox can permit a fixture port while denying another loopback destination. Running that sandbox requires execution outside the enclosing Codex sandbox. Dependency and protocol compatibility still require actual installed-package checks.
+Case 32's local feasibility investigation confirmed that the operating system sandbox can permit a fixture port while denying another loopback destination. Running that sandbox requires execution outside the enclosing Codex sandbox. Dependency and protocol compatibility subsequently passed actual installed-package checks. The generated server uses its own locked installation; the optional model adapter has mocked-provider evidence only.
 
 ## Qualification
 
@@ -42,4 +42,34 @@ Record exact successful commands, date, evidence mode, and limits in each README
 
 ## Delivery record
 
-Implementation and review are in progress. Final per-case status and evidence will be reconciled here and in the root catalogue after qualification.
+All eleven cases are implemented, independently reviewed and `demo-ready` for their selected local contracts as of 23 October 2026. The root catalogue and each README record the exact scoped evidence.
+
+| Case | Final test count per qualified environment | Evidence boundary |
+| --- | --- | --- |
+| 22 Ethical Reasoning | 26 | Source, case-only copy, installed wheel; symbolic effects |
+| 23 Explainable | 33 | Source, case-only copy, installed wheel; deterministic explanations |
+| 24 Healthcare Intelligence | 43 | Source, case-only copy, installed wheel; fictional conditions |
+| 25 Scientific Discovery | 37 | Source, case-only copy, installed wheel; synthetic corpus and experiment |
+| 26 Financial Advisory | 31 | Source, case-only copy, installed wheel; fictional prices and proposals |
+| 27 Legal Intelligence | 24 | Source, case-only copy, installed wheel; fictional authority and memo |
+| 28 Education Intelligence | 31 | Source, case-only copy, installed wheel; illustrative learner beliefs |
+| 29 Collective Intelligence | 29 | Source, case-only copy, installed wheel; synthetic roles and judgments |
+| 30 Embodied Intelligence | 43 | Source, case-only copy, installed wheel; integer cart simulator |
+| 31 Typed Decision | 40 | Source, case-only copy, installed wheel; fixed synthetic worker, no predictive evaluation |
+| 32 MCP Server Builder | 103 in the full suite | Fixture/mocked-provider; actual SDK, mock HTTP, OS egress gate and separate locked installations |
+
+Independent reviewers found and closed stdout delivery defects in 22–24 and 28–29, an argument diagnostic leak in 25, and schema-discovery, malformed-container, input-containment and unsupported-reference defects in 32. Failing-before regressions and final qualification cover those fixes. Review of 31 identified terminating-confidence precision, inherited Decimal context and UTF-8 byte-accounting defects. Those findings and adjacent Unicode/stdout failures were reproduced, fixed and independently rechecked through actual library and CLI paths. All findings are closed.
+
+Independent domain probes supplement the suites: 768 posterior/zero-mass/no-effect scenarios (24), 100 rational portfolio cases (26), 296 citation/applicability combinations (27), 10,648 rational BKT calculations (28), 363 exact vote cases (29), and 22,725 dispatcher combinations plus 3,000 seeded parsed requests (30). These exercise the selected synthetic contracts and do not establish real-world efficacy.
+
+| Phase commit | Delivered unit |
+| --- | --- |
+| `1445951` | Contracts, architecture and batch plan |
+| `8c1888e` | Reviewed and qualified cases 22–24 |
+| `6acc974` | Reviewed and qualified cases 25–27 |
+| `a4204bd` | Reviewed and qualified MCP Server Builder (32) |
+| `e793a46` | Reviewed and qualified cases 28–30 |
+| `712262b` | Reviewed and qualified Typed Decision (31) |
+| Final documentation phase | Synchronized catalogue, delivery record and evidence limits |
+
+Final repository integration passed `python3 scripts/check_structure.py`, `git diff --check` and all 306 relative Markdown link targets across 46 selected documents. All selected run paths and case-owned isolation checks are documented locally. Live models, real professional services, hardware, hosted CI, deployment and production qualification were not executed for this batch. Case 32's network sandbox is macOS-specific and does not provide filesystem confinement. Case 31 targets POSIX macOS/Linux; only macOS execution evidence is recorded.
